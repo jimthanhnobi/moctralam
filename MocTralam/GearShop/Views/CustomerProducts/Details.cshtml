@@ -70,14 +70,14 @@
 
 				<div class="product-price">
 					<span class="current-price">@Model.Price.ToString("c0", new System.Globalization.CultureInfo("vi-VN"))</span>
-					<span class="original-price">@Model.Price.ToString("c0", new System.Globalization.CultureInfo("vi-VN"))</span>
-					<span class="product-discount">-5%</span>
+				
+				
 				</div>
 
 				<p class="product-short-description">
 					@{
         if (!string.IsNullOrEmpty(Model.Description)) {
-							@Html.Raw(Model.Description)
+
         } else {
             @:Không có mô tả
         }
@@ -152,21 +152,14 @@
 					<div class="action-buttons">
 							@if (Model.Quantity != 0)
 							{
-								if (SignInManager.IsSignedIn(User))
-								{
-									<button id="button-addTOCart" type="submit" class="add-to-cart-btn-detail">
-										<i class="fas fa-shopping-cart"></i>
-										Thêm vào giỏ hàng
-									</button>
-								}
-								else
-								{
-									<a id="button-addTOCart" id="login" asp-area="Identity" asp-page="/Account/Login"
+
+								<a id="button-addTOCart" href="https://www.facebook.com/people/M%E1%BB%99c-Tr%C3%A0-Lam/61559942680687/"
 									   class="add-to-cart-btn-detail">
-										<i class="fas fa-shopping-cart"></i>
-										Thêm vào giỏ hàng
-									</a>
-								}
+									<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-facebook" viewBox="0 0 16 16">
+										<path d="M16 8.049c0-4.446-3.582-8.05-8-8.05C3.58 0-.002 3.603-.002 8.05c0 4.017 2.926 7.347 6.75 7.951v-5.625h-2.03V8.05H6.75V6.275c0-2.017 1.195-3.131 3.022-3.131.876 0 1.791.157 1.791.157v1.98h-1.009c-.993 0-1.303.621-1.303 1.258v1.51h2.218l-.354 2.326H9.25V16c3.824-.604 6.75-3.934 6.75-7.951" />
+									</svg>
+									Liên hệ với page
+								</a>
 							}
 							@if (Model.Quantity == 0)
 							{
@@ -199,84 +192,13 @@
 		<div class="product-tabs">
 			<div class="tabs-header">
 				<button class="tab-button active" onclick="openTab(event, 'description')">Mô tả</button>
-				<button class="tab-button" onclick="openTab(event, 'ingredients')">Thành phần</button>
-				<button class="tab-button" onclick="openTab(event, 'nutrition')">Thông tin dinh dưỡng</button>
-				<button class="tab-button" onclick="openTab(event, 'usage')">Hướng dẫn sử dụng</button>
-				<button class="tab-button" onclick="openTab(event, 'shipping')">Vận chuyển</button>
 			</div>
 
 			<div id="description" class="tab-content active">
-				<h3>Thông tin sản phẩm</h3>
-				<p>
-					Green Detox là sự kết hợp hoàn hảo giữa táo xanh, dưa leo, rau chân vịt và bạc hà, tạo nên một
-					thức uống detox tuyệt vời giúp thanh lọc cơ thể và tăng cường năng lượng. Với hương vị tươi mát
-					và thành phần hoàn toàn tự nhiên, Green Detox là lựa chọn lý tưởng cho những ai muốn duy trì lối
-					sống lành mạnh và cân bằng.
-				</p>
-
-				<p>
-					Nước detox Green Detox được sản xuất theo quy trình nghiêm ngặt, đảm bảo giữ nguyên dưỡng chất
-					và vitamin từ các nguyên liệu tự nhiên. Sản phẩm không chứa chất bảo quản, không đường tinh
-					luyện, phù hợp cho người muốn detox cơ thể và duy trì lối sống lành mạnh.
-				</p>
-
-				<h3>Lợi ích chính</h3>
-				<ul>
-					<li>
-						<strong>Thanh lọc cơ thể:</strong> Các thành phần tự nhiên trong Green Detox giúp loại bỏ
-						độc tố, thanh lọc gan và thận, hỗ trợ quá trình trao đổi chất hiệu quả.
-					</li>
-					<li>
-						<strong>Tăng cường năng lượng:</strong> Vitamin và khoáng chất từ táo xanh và rau chân vịt
-						giúp cung cấp năng lượng tự nhiên, giảm mệt mỏi và tăng cường sức khỏe.
-					</li>
-					<li>
-						<strong>Cải thiện tiêu hóa:</strong> Dưa leo và bạc hà có tác dụng làm mát, giúp cải thiện
-						hệ tiêu hóa và ngăn ngừa táo bón.
-					</li>
-					<li>
-						<strong>Giảm mỡ bụng:</strong> Green Detox hỗ trợ quá trình đốt cháy mỡ tự nhiên, đặc biệt
-						là vùng bụng, giúp duy trì vóc dáng cân đối.
-					</li>
-				</ul>
-
-				<p>
-					Green Detox là sản phẩm bán chạy nhất của DetoxFresh, được nhiều khách hàng tin dùng và đánh giá
-					cao về hiệu quả. Sản phẩm phù hợp cho mọi đối tượng, đặc biệt là những người bận rộn, ít thời
-					gian chăm sóc sức khỏe nhưng vẫn muốn duy trì lối sống lành mạnh.
-				</p>
+				@Html.Raw(Model.Description)
 			</div>
 
-			<div id="ingredients" class="tab-content">
-				<h3>Thành phần</h3>
-				<p>
-					Green Detox được chế biến từ các nguyên liệu tự nhiên, tươi ngon và giàu dinh dưỡng. Tất cả
-					nguyên liệu đều được lựa chọn kỹ càng từ các trang trại hữu cơ, đảm bảo độ tươi ngon và giàu
-					dưỡng chất.
-				</p>
 
-				<div class="ingredients-list">
-					<span class="ingredient-tag">Táo xanh</span>
-					<span class="ingredient-tag">Dưa leo</span>
-					<span class="ingredient-tag">Rau chân vịt</span>
-					<span class="ingredient-tag">Bạc hà</span>
-					<span class="ingredient-tag">Nước tinh khiết</span>
-					<span class="ingredient-tag">Chanh</span>
-					<span class="ingredient-tag">Gừng</span>
-				</div>
-
-				<h3>Quy trình sản xuất</h3>
-				<p>
-					Quy trình sản xuất được kiểm soát nghiêm ngặt để giữ nguyên giá trị dinh dưỡng của các nguyên
-					liệu:
-				</p>
-				<ol>
-					<li>Nguyên liệu tươi được rửa sạch và khử trùng tự nhiên</li>
-					<li>Ép nước ở nhiệt độ thấp để giữ nguyên vitamin và enzyme</li>
-					<li>Kết hợp các thành phần theo công thức độc quyền</li>
-					<li>Đóng chai trong môi trường</li>
-				</ol>
-			</div>
 		</div>
 	</div>
 <main/>
