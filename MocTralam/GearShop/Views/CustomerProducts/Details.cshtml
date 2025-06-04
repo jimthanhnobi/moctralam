@@ -15,8 +15,6 @@
 		<div class="breadcrumb">
 			<a asp-action="index" asp-controller="Home">Trang chủ</a>
 			<span class="breadcrumb-separator">/</span>
-			<a asp-action="index" asp-controller="CustomerProducts">Cửa hàng</a>
-			<span class="breadcrumb-separator">/</span>
 			<span>@Model.ProductName</span>
 		</div>
 
@@ -75,40 +73,7 @@
 				</div>
 
 				<p class="product-short-description">
-					@{
-        if (!string.IsNullOrEmpty(Model.Description)) {
 
-        } else {
-            @:Không có mô tả
-        }
-    }
-				</p>
-
-				<div class="product-meta">
-					<div class="product-meta-item">
-						<span class="meta-label">Tình trạng:</span>
-						<span class="meta-value">
-							@{
-								if (Model.Quantity > 0)
-								{
-									@:Còn hàng (@Model.Quantity)
-								}
-								else
-								{
-									@:Hết hàng
-								}
-							}
-						</span>
-					</div>
-					<div class="product-meta-item">
-						<span class="meta-label">Danh mục:</span>
-						<span class="meta-value">@Model.Brand.BrandName</span>
-					</div>
-					<div class="product-meta-item">
-						<span class="meta-label">Thương hiệu:</span>
-						<span class="meta-value">@Model.ProductType.TypeName</span>
-					</div>
-				</div>
 
 				@* <div class="product-benefits">
 					<h4>Lợi ích chính:</h4>
@@ -143,16 +108,9 @@
 							</button>
 						</div>
 					</div>
-					<form id="add-to-cart-form" method="post">
-						<input id="UserId-Cart" type="text" hidden name="userId"
-							   value="@(user!=null?user.Id:"")" />
-						<input id="ProductId-Cart" type="number" hidden name="productId"
-							   value="@Model.Id" />
-						<input hidden id="Quantity-Cart" type="number" name="quantity" value="1">
-					<div class="action-buttons">
-							@if (Model.Quantity != 0)
-							{
-
+					<div id="add-to-cart-form" method="post">
+						
+					
 								<a id="button-addTOCart" href="https://www.facebook.com/people/M%E1%BB%99c-Tr%C3%A0-Lam/61559942680687/"
 									   class="add-to-cart-btn-detail">
 									<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-facebook" viewBox="0 0 16 16">
@@ -160,17 +118,13 @@
 									</svg>
 									Liên hệ với page
 								</a>
-							}
-							@if (Model.Quantity == 0)
-							{
-								<p class="text-danger">Sản phẩm hiện đã hết hàng</p>
-							}
+					
 						@* <button class="buy-now-btn" onclick="buyNow('green-detox', getQuantity())">
 							<i class="fas fa-bolt"></i>
 							Mua ngay
 						</button> *@
 					</div>
-					</form>
+				
 				</div>
 
 				<div class="product-guarantee">

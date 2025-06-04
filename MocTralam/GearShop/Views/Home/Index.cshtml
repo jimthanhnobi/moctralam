@@ -56,7 +56,7 @@
                         ngày.
                     </p>
                     <div class="hero-buttons">
-                        <a asp-action="index" asp-controller="CustomerProducts" class="btn btn-primary">
+                        <a href="/#products" class="btn btn-primary">
                             Mua ngay
                             <i class="fas fa-arrow-right"></i>
                         </a>
@@ -153,10 +153,9 @@
                                 </div>
                             </div>
                             <div class="product-actions">
-                                <button class="add-to-cart-btn" onclick="addToCart('${product.id}')">
-                                    <i class="fas fa-shopping-cart"></i>
-                                    Thêm vào giỏ
-                                </button>
+                                <a class="add-to-cart-btn" asp-action="Details" asp-controller="CustomerProducts" asp-route-Id=@item.Id>
+                                    Xem chi tiết
+                                </a>
                                 <a asp-action="Details" asp-controller="CustomerProducts" asp-route-Id=@item.Id>
                                 <button class="view-product-btn">
                                     <i class="fas fa-eye"></i>
@@ -169,12 +168,7 @@
                 
 
             </div>
-            <div class="section-footer">
-                <a asp-action="index" asp-controller="CustomerProducts" class="btn btn-outline">
-                    Xem tất cả sản phẩm
-                    <i class="fas fa-arrow-right"></i>
-                </a>
-            </div>
+
         </div>
     </section>
 
