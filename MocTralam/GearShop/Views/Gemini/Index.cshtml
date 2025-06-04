@@ -1,0 +1,243 @@
+﻿@model dynamic
+@{
+    ViewData["Title"] = "Gemini AI Chat";
+}
+
+<div class="container mt-5">
+    <h2 class="text-center mb-4">Chat với Gearshop AI</h2>
+
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <div id="chat-container" class="border rounded p-3 mb-3" style="height: 600px; overflow-y: auto; background-color: #f8f9fa;">
+                <!-- Tin nhắn sẽ được thêm động bằng JavaScript -->
+            </div>
+            <form id="chat-form" onsubmit="sendMessage(event)">
+                <div class="input-group">
+                    <textarea class="form-control" id="prompt" name="prompt" rows="2" placeholder="Nhập câu hỏi của bạn..." required></textarea>
+                    <button type="submit" class="btn btn-primary">Gửi</button>
+                </div>
+            </form>
+            <button type="button" class="btn btn-secondary mt-2" onclick="clearChat()">Xóa lịch sử chat</button>
+        </div>
+    </div>
+</div>
+
+<style>
+    .message-user {
+        display: flex;
+        justify-content: flex-end;
+        margin-bottom: 15px;
+    }
+
+    .message-bot {
+        display: flex;
+        justify-content: flex-start;
+        margin-bottom: 15px;
+    }
+
+    .message-content {
+        max-width: 70%;
+        padding: 10px 15px;
+        border-radius: 15px;
+        word-break: break-word;
+    }
+
+    .message-user .message-content {
+        background-color: #007bff;
+        color: white;
+        border-bottom-right-radius: 5px;
+    }
+
+    .message-bot .message-content {
+        background-color: #6c757d;
+        color: white;
+        border-bottom-left-radius: 5px;
+    }
+
+        .message-bot .message-content img {
+            margin-top: 10px;
+            max-width: 150px;
+            height: auto;
+            border-radius: 5px;
+            display: block;
+        }
+
+    .product-list, .product-info {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .product-item {
+        background: rgba(255, 255, 255, 0.1);
+        padding: 10px;
+        border-radius: 5px;
+    }
+</style>
+
+@section Scripts {
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/2.4.0/purify.min.js"></script>
+    <script>
+        const chatContainer = document.getElementById('chat-container');
+        const chatForm = document.getElementById('chat-form');
+        const promptInput = document.getElementById('prompt');
+
+        // Function to extract inner content from HTML response
+        function extractInnerContent(html) {
+            // Match the content within the main <div> with class 'bg-white rounded-lg shadow-md p-6'
+            const regex = /<div class="bg-white rounded-lg shadow-md p-6">([\s\S]*?)<\/div>\s*<\/div>\s*<\/body>/i;
+            const match = html.match(regex);
+            return match ? match[1] : html; // Return inner content or original HTML if regex fails
+        }
+
+        // Function to extract plain text for typewriter effect
+        function getPlainTextFromHtml(html) {
+            const tempDiv = document.createElement('div');
+            tempDiv.innerHTML = html;
+            // Remove img tags to avoid typing their src as text
+            const images = tempDiv.getElementsByTagName('img');
+            while (images.length > 0) {
+                images[0].parentNode.removeChild(images[0]);
+            }
+            return tempDiv.textContent || tempDiv.innerText || '';
+        }
+
+        function loadChatHistory() {
+            const history = JSON.parse(localStorage.getItem('chatHistory')) || [];
+            history.forEach(msg => {
+                addMessage(msg.content, msg.isUser, null, true);
+            });
+        }
+
+        function saveMessage(content, isUser, imageUrl) {
+            const history = JSON.parse(localStorage.getItem('chatHistory')) || [];
+            history.push({ content, isUser, imageUrl });
+            localStorage.setItem('chatHistory', JSON.stringify(history));
+        }
+
+        function clearChat() {
+            localStorage.removeItem('chatHistory');
+            chatContainer.innerHTML = '';
+        }
+
+        function addMessage(content, isUser = false, imageUrl = null, fromHistory = false) {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = isUser ? 'message-user' : 'message-bot';
+            const messageContent = document.createElement('span');
+            messageContent.className = 'message-content';
+            if (isUser) {
+                // For user messages, display plain text directly
+                messageContent.textContent = content;
+            } else {
+                // For bot messages, start with an empty span for typewriter
+                messageContent.innerHTML = '';
+            }
+            messageDiv.appendChild(messageContent);
+            chatContainer.appendChild(messageDiv);
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+
+            if (!isUser && !fromHistory) {
+                // Apply typewriter effect for bot messages (not from history)
+                typeWriter(content, messageContent, () => {
+                    // After typing, append image if provided and not already in HTML
+                    if (imageUrl && !content.includes('<img')) {
+                        const img = document.createElement('img');
+                        img.src = imageUrl;
+                        img.alt = 'Hình ảnh sản phẩm';
+                        img.className = 'mt-2';
+                        img.style.maxWidth = '150px';
+                        img.style.height = 'auto';
+                        img.style.borderRadius = '5px';
+                        img.style.display = 'block';
+                        img.onerror = function() { this.style.display = 'none'; };
+                        messageContent.appendChild(img);
+                    }
+                    saveMessage(content, false, imageUrl);
+                });
+            } else {
+                // For user messages or history, render directly
+                messageContent.innerHTML = DOMPurify.sanitize(content);
+                if (!isUser && imageUrl && !content.includes('<img')) {
+                    const img = document.createElement('img');
+                    img.src = imageUrl;
+                    img.alt = 'Hình ảnh sản phẩm';
+                    img.className = 'mt-2';
+                    img.style.maxWidth = '150px';
+                    img.style.height = 'auto';
+                    img.style.borderRadius = '5px';
+                    img.style.display = 'block';
+                    img.onerror = function() { this.style.display = 'none'; };
+                    messageContent.appendChild(img);
+                }
+                if (fromHistory) {
+                    saveMessage(content, isUser, imageUrl);
+                }
+            }
+
+            return { messageDiv, messageContent };
+        }
+
+        function typeWriter(html, element, callback, speed = 30) {
+            // Extract plain text for typewriter effect
+            const plainText = getPlainTextFromHtml(html);
+            let i = 0;
+            const tempSpan = document.createElement('span');
+            element.appendChild(tempSpan);
+
+            function type() {
+                if (i < plainText.length) {
+                    tempSpan.textContent += plainText.charAt(i);
+                    i++;
+                    setTimeout(type, speed);
+                } else {
+                    // Once typing is done, replace with full HTML
+                    element.innerHTML = DOMPurify.sanitize(html);
+                    if (callback) callback();
+                }
+            }
+            type();
+        }
+
+        async function sendMessage(event) {
+            event.preventDefault();
+            const prompt = promptInput.value.trim();
+            if (!prompt) {
+                alert('Vui lòng nhập câu hỏi!');
+                return;
+            }
+
+            // Add user message
+            addMessage(prompt, true);
+            saveMessage(prompt, true, null);
+            promptInput.value = '';
+
+            // Add bot message placeholder
+            const { messageContent } = addMessage('', false);
+
+            try {
+                const response = await fetch('/Gemini/GenerateAjax', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ prompt })
+                });
+
+                const data = await response.json();
+                if (data.success) {
+                    // Extract inner content from the HTML response
+                    const innerContent = extractInnerContent(data.result);
+                    addMessage(innerContent, false, data.imageUrl);
+                } else {
+                    messageContent.innerHTML = DOMPurify.sanitize(`<p>Lỗi: ${data.error}</p>`);
+                    saveMessage(`<p>Lỗi: ${data.error}</p>`, false, null);
+                }
+            } catch (error) {
+                messageContent.innerHTML = DOMPurify.sanitize(`<p>Lỗi kết nối: ${error.message}</p>`);
+                saveMessage(`<p>Lỗi kết nối: ${error.message}</p>`, false, null);
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', loadChatHistory);
+    </script>
+}

@@ -1,0 +1,227 @@
+﻿@model IEnumerable<GearShop.Models.Cart>
+
+@{
+	ViewData["Title"] = "Cart";
+}
+
+<style>
+    .quantity-btn {
+        border: none;
+        background: none;
+        cursor: pointer;
+        outline: none;
+    }
+
+        .quantity-btn:focus {
+            outline: none;
+        }
+
+        .quantity-btn:active {
+            outline: none;
+        }
+</style>
+
+<main>
+    <div class="cart-container">
+        <!-- Cart Header -->
+        <div class="cart-header">
+            <h1 class="cart-title">Giỏ hàng của bạn</h1>
+            <p class="cart-subtitle">Vui lòng xem lại đơn hàng trước khi thanh toán!</p>
+        </div>
+
+        <!-- Cart Content -->
+        <div class="cart-content" id="cartContent">
+            <!-- Cart Items Section -->
+            <div id="_itemCartPartial" class="cart-items-section">
+                <partial name="_itemCartPartial" model="Model" />   
+            </div>
+
+            <!-- Cart Summary -->
+            <div class="cart-summary">
+                <h2 class="summary-title">
+                    <i class="fas fa-receipt"></i>
+                    Tóm tắt đơn hàng
+                </h2>
+
+                <!-- Coupon Section -->
+                <div class="coupon-section">
+                    <div class="coupon-title">Mã giảm giá</div>
+                    <div class="coupon-input-group">
+                        <input type="text" class="coupon-input" id="couponCode" placeholder="Nhập mã giảm giá">
+                        <button class="coupon-btn" onclick="applyCoupon()">Áp dụng</button>
+                    </div>
+                    <div class="coupon-success" id="couponSuccess">
+                        <i class="fas fa-check-circle"></i> 
+                        <span>Mã DETOX10 đã được áp dụng (-33.200₫)</span>
+                        <button class="remove-coupon-btn" onclick="removeCoupon()">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Summary Totals -->
+                <div class="summary-totals">
+                    <div class="total-row subtotal">
+                        <span>Tạm tính (3 sản phẩm):</span>
+                        <span id="subtotal">332.000₫</span>
+                    </div>
+                    <div class="total-row shipping">
+                        <span>Phí vận chuyển:</span>
+                        <span id="shippingFee">30.000₫</span>
+                    </div>
+                    <div class="total-row discount" id="discountRow" >
+                        <span>Giảm giá:</span>
+                        <span id="discountAmount">-33.200₫</span>
+                    </div>
+                    <div class="total-row final">
+                        <span>Tổng cộng:</span>
+                        <span id="finalTotal">0₫</span>
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="cart-actions">
+                    <form method="post" asp-action="CreatePayment" asp-controller="payment">
+                        <input name="code" type="text" hidden value="@ViewBag.Code" />
+                        <div id="selectedCartInputs"></div> <!-- DI CHUYỂN vào trong form -->
+                        <button type="submit" class="checkout-btn">
+                            Thanh toán
+                            qua VNPAY
+                        </button>
+                    </form>
+                    <a href="shop-advanced.html" class="continue-shopping-link">
+                        <i class="fas fa-arrow-left"></i>
+                        Tiếp tục mua sắm
+                    </a>
+                </div>
+
+
+                <!-- Security Notice -->
+                <div class="security-notice">
+                    <i class="fas fa-shield-alt"></i>
+                    <span>Thanh toán an toàn và bảo mật</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Empty Cart State (Hidden by default) -->
+        <div class="empty-cart" id="emptyCart" style="display: none;">
+            <div class="empty-cart-icon">
+                <i class="fas fa-shopping-cart"></i>
+            </div>
+            <h2 class="empty-cart-title">Giỏ hàng trống</h2>
+            <p class="empty-cart-description">
+                Bạn chưa có sản phẩm nào trong giỏ hàng. Hãy khám phá các sản phẩm detox tuyệt vời của chúng tôi!
+            </p>
+            <a href="shop-advanced.html" class="continue-shopping-btn">
+                <i class="fas fa-leaf"></i>
+                Khám phá sản phẩm
+            </a>
+        </div>
+
+        <!-- Recommended Products -->
+        <div class="recommended-section">
+            <h2 class="recommended-title">Có thể bạn quan tâm</h2>
+            <div class="recommended-products">
+                <a href="product-detail.html?id=cucumber-mint" class="product-card">
+                    <div class="product-image">
+                        <img src="https://images.unsplash.com/photo-1571068316344-75bc76f77890?w=250&h=250&fit=crop"
+                             alt="Cucumber Mint">
+                    </div>
+                    <div class="product-info">
+                        <div class="product-name">Cucumber Mint</div>
+                        <div class="product-prices">
+                            <div class="original-price">72.000₫</div>
+                            <div class="current-price">69.000₫</div>
+                        </div>
+                    </div>
+                </a>
+                <a href="product-detail.html?id=citrus-cleanse" class="product-card">
+                    <div class="product-image">
+                        <img src="https://images.unsplash.com/photo-1613478223719-2ab802602423?w=250&h=250&fit=crop"
+                             alt="Citrus Cleanse">
+                    </div>
+                    <div class="product-info">
+                        <div class="product-name">Citrus Cleanse</div>
+                        <div class="product-prices">
+                            <div class="original-price">79.000₫</div>
+                            <div class="current-price">75.000₫</div>
+                        </div>
+                    </div>
+                </a>
+                <a href="product-detail.html?id=beetroot-carrot" class="product-card">
+                    <div class="product-image">
+                        <img src="https://images.unsplash.com/photo-1610970881699-44a5587cabec?w=250&h=250&fit=crop"
+                             alt="Beetroot Carrot">
+                    </div>
+                    <div class="product-info">
+                        <div class="product-name">Beetroot Carrot</div>
+                        <div class="product-prices">
+                            <div class="original-price">86.000₫</div>
+                            <div class="current-price">82.000₫</div>
+                        </div>
+                    </div>
+                </a>
+                <a href="product-detail.html?id=detox-combo-1" class="product-card">
+                    <div class="product-image">
+                        <div class="product-badge" style="background-color: #22c55e;">Combo</div>
+                        <img src="https://images.unsplash.com/photo-1622597467836-f3285f2131b8?w=250&h=250&fit=crop"
+                             alt="Combo Detox 7 ngày">
+                    </div>
+                    <div class="product-info">
+                        <div class="product-name">Combo Detox 7 ngày</div>
+                        <div class="product-prices">
+                            <div class="original-price">500.000₫</div>
+                            <div class="current-price">450.000₫</div>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </div>
+</main>
+
+<!-- Cart Start -->
+@*<div class="container-fluid">
+	<div class="row px-xl-5">
+		<div id="_itemCartPartial" class="col-lg-9 table-responsive mb-5">
+			<partial name="_itemCartPartial" model="Model" />
+		</div>
+		<div class="col-lg-3">
+			<form class="mb-30" asp-action="ApplyCoupon" asp-controller="CustomerCarts" method="post">
+				<div class="input-group">
+					<input required name="code" type="text" class="form-control border-0 p-4" placeholder="Mã giảm giá">
+					<div class="input-group-append">
+						<button type="submit" class="btn btn-primary">Áp dụng</button>
+					</div>
+				</div>
+			</form>
+			<h5 class="section-title position-relative text-uppercase mb-3"><span class="bg-secondary pr-3">Thanh toán</span></h5>
+			<!-- Payment method -->
+			<form method="post" asp-action="CreatePayment" asp-controller="payment" class="bg-light p-30 mb-5">
+				<div id="selectedCartInputs"></div>
+				<input name="code" type="text" hidden value="@ViewBag.Code" />
+				<div class="border-bottom pb-2">
+					<div class="d-flex justify-content-between mb-3">
+						<h6>Ước tính</h6>
+						<h6 id="selectedTotal1">0đ</h6>
+					</div>
+					<div class="d-flex justify-content-between">
+						<h6 class="font-weight-medium">Đã giảm</h6>
+						<h6 class="font-weight-medium">@(ViewBag.coupon != 0 ? $"{ViewBag.coupon}%" : "không áp dụng")</h6>
+					</div>
+				</div>
+				<div class="pt-2">
+					<div class="d-flex justify-content-between mt-2">
+						<h5>Tổng cộng</h5>
+						<h5 id="selectedTotal">0đ</h5>
+					</div>
+					<button type="submit" class="btn btn-block btn-primary font-weight-bold my-3 py-3">Thanh toán qua VNPAY</button>
+				</div>
+			</form>
+
+		</div>
+	</div>
+</div>
+*@
+<!-- Cart End -->

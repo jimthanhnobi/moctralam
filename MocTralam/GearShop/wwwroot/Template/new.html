@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mộc Trà Lam - Sản phẩm từ thiên nhiên</title>
+    <meta name="description"
+          content="Trà thảo mộc - nguyên liệu tự nhiên, giúp thanh lọc cơ thể và tăng cường sức khỏe mỗi ngày.">
+
+    <link href="css/styles.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="nav-wrapper">
+                <div class="nav-left">
+                    <a href="#" class="logo">
+                        <!--<img src="img/carousel-1.jpg"
+                             alt="">-->
+                        <img src="../img/moctralam.jpg" width="62px"/>
+                        <span>Mộc Trà Lam</span>
+                    </a>
+                    <nav class="nav-menu">
+                        <a href="#products">Sản phẩm</a>
+                        <a href="shop.html">Cửa hàng</a>
+                        <a href="#benefits">Lợi ích</a>
+                        <a href="#testimonials">Đánh giá</a>
+                        <a href="#contact">Liên hệ</a>
+                    </nav>
+                </div>
+                <div class="nav-right">
+                    <button class="mobile-menu-btn" onclick="toggleMobileMenu()">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                    <button class="cart-btn" onclick="toggleCart()">
+                        <i class="fas fa-shopping-cart"></i>
+                        <span class="cart-count" id="cartCount">0</span>
+                    </button>
+                    <button class="login-btn">
+
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Mobile Menu --> 
+    <div class="mobile-menu" id="mobileMenu">
+        <a href="#products">Sản phẩm</a>
+        <a href="shop.html">Cửa hàng</a>
+        <a href="#benefits">Lợi ích</a>
+        <a href="#testimonials">Đánh giá</a>
+        <a href="#contact">Liên hệ</a>
+    </div>
+
+    <!-- Cart Sidebar -->
+    <div class="cart-overlay" id="cartOverlay" onclick="toggleCart()"></div>
+    <div class="cart-sidebar" id="cartSidebar">
+        <div class="cart-header">
+            <h3>Giỏ hàng</h3>
+            <button onclick="toggleCart()"><i class="fas fa-times"></i></button>
+        </div>
+        <div class="cart-items" id="cartItems">
+            <!-- Cart items will be populated by JavaScript -->
+        </div>
+        <div class="cart-footer">
+            <div class="cart-total">
+                <span>Tổng: <span id="cartTotal">0₫</span></span>
+            </div>
+            <button class="checkout-btn" onclick="goToCheckout()">Thanh toán</button>
+        </div>
+    </div>
+
+    <main>
+        <!-- Hero Section -->
+        <section class="hero">
+            <div class="container">
+                <div class="hero-content">
+                    <div class="hero-text">
+                        <span class="badge">Sản phẩm mới</span>
+                        <h1>Trà thảo mộc cho cuộc sống khỏe mạnh</h1>
+                        <p>
+                            Trà thảo mộc từ nguyên liệu tự nhiên, giúp thanh lọc cơ thể và tăng cường sức khỏe mỗi
+                            ngày.
+                        </p>
+                        <div class="hero-buttons">
+                            <a href="shop.html" class="btn btn-primary">
+                                Mua ngay
+                                <i class="fas fa-arrow-right"></i>
+                            </a>
+                            <a href="#benefits" class="btn btn-outline">Tìm hiểu thêm</a>
+                        </div>
+                        <div class="hero-features">
+                            <div class="feature">
+                                <i class="fas fa-check"></i>
+                                <span>100% Tự nhiên</span>
+                            </div>
+                            <div class="feature">
+                                <i class="fas fa-check"></i>
+                                <span>Không chất bảo quản</span>
+                            </div>
+                            <div class="feature">
+                                <i class="fas fa-check"></i>
+                                <span>Giao hàng nhanh</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="hero-image">
+                        <img src="https://images.unsplash.com/photo-1622597467836-f3285f2131b8?w=600&h=600&fit=crop"
+                             alt="Detox Drinks">
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Products Section -->
+        <section id="products" class="products-section">
+            <div class="container">
+                <div class="section-header">
+                    <h2>Sản phẩm nổi bật</h2>
+                    <p>Khám phá bộ sưu tập nước detox tươi ngon và bổ dưỡng của chúng tôi</p>
+                </div>
+                <div class="products-grid" id="featuredProducts">
+                    <!-- Products will be populated by JavaScript -->
+                    <div class="product-card">
+                        <div class="product-image">
+                            <div class="product-badge new">Mới</div>
+                            <img src="https://images.unsplash.com/photo-1622597467836-f3285f2131b8?w=300&h=300&fit=crop" alt="Green Detox">
+                        </div>
+                        <div class="product-info">
+                            <div class="product-name">Green Detox</div>
+                            <div class="product-description">Táo xanh, dưa leo, rau chân vịt, bạc hà, nước tinh khiết</div>
+                            <div class="product-rating">
+                                <div>
+                                    <!--${stars}
+                    <span class="rating-count">(${product.reviews})</span>
+                        ${product.price.toLocaleString()}
+                    -->
+                                </div>
+                                <div class="product-price">79000₫</div>
+                            </div>
+                            <div class="product-actions">
+                                <button class="add-to-cart-btn" onclick="addToCart('${product.id}')">
+                                    <i class="fas fa-shopping-cart"></i>
+                                    Thêm vào giỏ
+                                </button>
+                                <button class="view-product-btn" onclick="viewProduct('${product.id}')">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="product-card">
+                        <div class="product-image">
+                            <div class="product-badge new">Mới</div>
+                            <img src="https://images.unsplash.com/photo-1622597467836-f3285f2131b8?w=300&h=300&fit=crop" alt="Green Detox">
+                        </div>
+                        <div class="product-info">
+                            <div class="product-name">Green Detox</div>
+                            <div class="product-description">Táo xanh, dưa leo, rau chân vịt, bạc hà, nước tinh khiết</div>
+                            <div class="product-rating">
+                                <div>
+                                    <!--${stars}
+                    <span class="rating-count">(${product.reviews})</span>
+                        ${product.price.toLocaleString()}
+                    -->
+                                </div>
+                                <div class="product-price">79000₫</div>
+                            </div>
+                            <div class="product-actions">
+                                <button class="add-to-cart-btn" onclick="addToCart('${product.id}')">
+                                    <i class="fas fa-shopping-cart"></i>
+                                    Thêm vào giỏ
+                                </button>
+                                <button class="view-product-btn" onclick="viewProduct('${product.id}')">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="product-card">
+                        <div class="product-image">
+                            <div class="product-badge new">Mới</div>
+                            <img src="https://images.unsplash.com/photo-1622597467836-f3285f2131b8?w=300&h=300&fit=crop" alt="Green Detox">
+                        </div>
+                        <div class="product-info">
+                            <div class="product-name">Green Detox</div>
+                            <div class="product-description">Táo xanh, dưa leo, rau chân vịt, bạc hà, nước tinh khiết</div>
+                            <div class="product-rating">
+                                <div>
+                                    <!--${stars}
+                    <span class="rating-count">(${product.reviews})</span>
+                        ${product.price.toLocaleString()}
+                    -->
+                                </div>
+                                <div class="product-price">79000₫</div>
+                            </div>
+                            <div class="product-actions">
+                                <button class="add-to-cart-btn" onclick="addToCart('${product.id}')">
+                                    <i class="fas fa-shopping-cart"></i>
+                                    Thêm vào giỏ
+                                </button>
+                                <button class="view-product-btn" onclick="viewProduct('${product.id}')">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="section-footer">
+                    <a href="shop.html" class="btn btn-outline">
+                        Xem tất cả sản phẩm
+                        <i class="fas fa-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- Benefits Section -->
+        <section id="benefits" class="benefits-section">
+            <div class="container">
+                <div class="section-header">
+                    <h2>Lợi ích của nước detox</h2>
+                    <p>Khám phá những lợi ích tuyệt vời mà nước detox mang lại cho sức khỏe của bạn</p>
+                </div>
+                <div class="benefits-grid">
+                    <div class="benefit-card">
+                        <div class="benefit-icon">
+                            <i class="fas fa-bolt"></i>
+                        </div>
+                        <h3>Tăng cường năng lượng</h3>
+                        <p>
+                            Nước detox giúp cung cấp vitamin và khoáng chất thiết yếu, tăng cường năng lượng và sự tỉnh
+                            táo.
+                        </p>
+                    </div>
+                    <div class="benefit-card">
+                        <div class="benefit-icon">
+                            <i class="fas fa-leaf"></i>
+                        </div>
+                        <h3>Thanh lọc cơ thể</h3>
+                        <p>Giúp loại bỏ độc tố, thanh lọc gan và thận, hỗ trợ quá trình trao đổi chất hiệu quả.</p>
+                    </div>
+                    <div class="benefit-card">
+                        <div class="benefit-icon">
+                            <i class="fas fa-weight"></i>
+                        </div>
+                        <h3>Hỗ trợ giảm cân</h3>
+                        <p>
+                            Thúc đẩy quá trình trao đổi chất, giảm cảm giác thèm ăn và hỗ trợ quá trình đốt cháy mỡ tự
+                            nhiên.
+                        </p>
+                    </div>
+                    <div class="benefit-card">
+                        <div class="benefit-icon">
+                            <i class="fas fa-heart"></i>
+                        </div>
+                        <h3>Cải thiện tiêu hóa</h3>
+                        <p>Các thành phần tự nhiên trong nước detox giúp cải thiện hệ tiêu hóa và ngăn ngừa táo bón.</p>
+                    </div>
+                    <div class="benefit-card">
+                        <div class="benefit-icon">
+                            <i class="fas fa-smile"></i>
+                        </div>
+                        <h3>Làm đẹp da</h3>
+                        <p>Cung cấp độ ẩm và chất chống oxy hóa giúp làn da sáng mịn, ngăn ngừa lão hóa sớm.</p>
+                    </div>
+                    <div class="benefit-card">
+                        <div class="benefit-icon">
+                            <i class="fas fa-shield-alt"></i>
+                        </div>
+                        <h3>Tăng cường miễn dịch</h3>
+                        <p>
+                            Vitamin và khoáng chất trong nước detox giúp tăng cường hệ miễn dịch, bảo vệ cơ thể khỏi bệnh
+                            tật.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Testimonials Section -->
+        <section id="testimonials" class="testimonials-section">
+            <div class="container">
+                <div class="section-header">
+                    <h2>Khách hàng nói gì về chúng tôi</h2>
+                    <p>Những trải nghiệm thực tế từ khách hàng đã sử dụng sản phẩm của chúng tôi</p>
+                </div>
+                <div class="testimonials-grid">
+                    <div class="testimonial-card">
+                        <div class="testimonial-header">
+                            <img src="https://images.unsplash.com/photo-1494790108755-2616b612b786?w=50&h=50&fit=crop&crop=face"
+                                 alt="Nguyễn Thị Hương">
+                            <div>
+                                <h4>Nguyễn Thị Hương</h4>
+                                <div class="stars">
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <p>
+                            "Tôi đã sử dụng nước detox của DetoxFresh được 2 tháng và thấy sức khỏe cải thiện rõ rệt. Da
+                            dẻ sáng hơn, tiêu hóa tốt hơn và cảm thấy tràn đầy năng lượng mỗi ngày."
+                        </p>
+                    </div>
+                    <div class="testimonial-card">
+                        <div class="testimonial-header">
+                            <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=50&h=50&fit=crop&crop=face"
+                                 alt="Trần Văn Minh">
+                            <div>
+                                <h4>Trần Văn Minh</h4>
+                                <div class="stars">
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="far fa-star"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <p>
+                            "Tôi thường xuyên tập luyện và nước detox của DetoxFresh là thức uống không thể thiếu sau mỗi
+                            buổi tập. Giúp tôi phục hồi nhanh chóng và duy trì năng lượng cả ngày."
+                        </p>
+                    </div>
+                    <div class="testimonial-card">
+                        <div class="testimonial-header">
+                            <img src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=50&h=50&fit=crop&crop=face"
+                                 alt="Lê Thị Mai">
+                            <div>
+                                <h4>Lê Thị Mai</h4>
+                                <div class="stars">
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <p>
+                            "Hương vị tuyệt vời và thành phần hoàn toàn tự nhiên. Tôi đã giảm 3kg sau 1 tháng kết hợp
+                            uống detox và tập luyện. Sẽ tiếp tục sử dụng và giới thiệu cho bạn bè."
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- CTA Section -->
+        <section class="cta-section">
+            <div class="container">
+                <div class="cta-content">
+                    <div class="cta-text">
+                        <h2>Bắt đầu hành trình detox của bạn ngay hôm nay</h2>
+                        <p>Đăng ký nhận thông tin về sản phẩm mới và ưu đãi đặc biệt từ DetoxFresh</p>
+                        <div class="newsletter-form">
+                            <input type="email" placeholder="Email của bạn" id="newsletterEmail">
+                            <button class="btn btn-white" onclick="subscribeNewsletter()">
+                                Đăng ký
+                                <i class="fas fa-arrow-right"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="cta-image">
+                        <img src="https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=400&h=400&fit=crop"
+                             alt="Detox Lifestyle">
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer id="contact" class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <div class="footer-logo">
+                        <i class="fas fa-leaf"></i>
+                        <span>DetoxFresh</span>
+                    </div>
+                    <p>
+                        Thức uống detox từ nguyên liệu tự nhiên, giúp thanh lọc cơ thể và tăng cường sức khỏe mỗi ngày.
+                    </p>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-facebook"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                    </div>
+                </div>
+                <div class="footer-section">
+                    <h3>Sản phẩm</h3>
+                    <ul>
+                        <li><a href="shop.html?category=trai-cay">Nước detox trái cây</a></li>
+                        <li><a href="shop.html?category=rau-cu">Nước detox rau củ</a></li>
+                        <li><a href="shop.html">Combo detox</a></li>
+                        <li><a href="shop.html">Gói đăng ký</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>Thông tin</h3>
+                    <ul>
+                        <li><a href="#">Về chúng tôi</a></li>
+                        <li><a href="#">Chính sách bảo mật</a></li>
+                        <li><a href="#">Điều khoản sử dụng</a></li>
+                        <li><a href="#">Blog</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>Liên hệ</h3>
+                    <ul class="contact-info">
+                        <li>
+                            <i class="fas fa-phone"></i>
+                            <span>0123 456 789</span>
+                        </li>
+                        <li>
+                            <i class="fas fa-envelope"></i>
+                            <span>info@detoxfresh.com</span>
+                        </li>
+                        <li>
+                            <i class="fas fa-map-marker-alt"></i>
+                            <span>123 Đường Nguyễn Huệ, Quận 1, TP. Hồ Chí Minh</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>© 2025 DetoxFresh. Tất cả các quyền được bảo lưu.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Toast Notification -->
+    <!--<div class="toast" id="toast">
+        <div class="toast-content">
+            <i class="fas fa-check-circle"></i>
+            <span id="toastMessage"></span>
+        </div>
+    </div>-->
+
+    <script src="js/main.js"></script>
+    <script>
+        function toggleMobileMenu() {
+            const mobileMenu = document.getElementById('mobileMenu');
+            mobileMenu.classList.toggle('active');
+        }
+
+    </script>
+</body>
+
+</html>

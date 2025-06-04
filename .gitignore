@@ -1,0 +1,12 @@
+bin/
+obj/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# Cấu hình
+appsettings.json
+appsettings.*.json
+secrets.json
+.env

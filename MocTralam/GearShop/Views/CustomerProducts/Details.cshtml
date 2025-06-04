@@ -1,0 +1,606 @@
+﻿@using Microsoft.AspNetCore.Identity
+@model GearShop.Models.Product
+@inject UserManager<IdentityUser> UserManager
+@inject SignInManager<IdentityUser> SignInManager
+@inject GearShop.Data.ApplicationDbContext _context
+
+@{
+	var user = await UserManager.GetUserAsync(User);
+	ViewData["Title"] = Model.ProductName;
+}
+
+<main>
+	<div class="product-detail-container">
+		<!-- Breadcrumb -->
+		<div class="breadcrumb">
+			<a asp-action="index" asp-controller="Home">Trang chủ</a>
+			<span class="breadcrumb-separator">/</span>
+			<a asp-action="index" asp-controller="CustomerProducts">Cửa hàng</a>
+			<span class="breadcrumb-separator">/</span>
+			<span>@Model.ProductName</span>
+		</div>
+
+		<!-- Product Detail -->
+		<div class="product-detail">
+			<!-- Product Gallery -->
+			<div class="product-gallery">
+				<div id="product-carousel" class="carousel slide" data-ride="carousel">
+					<div class="carousel-inner bg-light">
+						@{
+							List<ProductImage> listImg = Model.Images.ToList();
+
+							if (listImg != null)
+							{
+								<div class="carousel-inner" style="height: 500px;">
+									@for (int i = 0; i < listImg.Count; i++)
+									{
+										<div class="carousel-item @(i == 0 ? " active" : "" )" style="height: 100%;">
+											<img src="@listImg[i].ImageUrl" class="w-100 h-100"
+												 style="object-fit: cover; height: 100%; width: 100%;" alt="Image" />
+										</div>
+									}
+								</div>
+
+							}
+						}
+					</div>
+					<a class="carousel-control-prev" href="#product-carousel" data-slide="prev">
+						<i class="fa fa-2x fa-angle-left text-dark"></i>
+					</a>
+					<a class="carousel-control-next" href="#product-carousel" data-slide="next">
+						<i class="fa fa-2x fa-angle-right text-dark"></i>
+					</a>
+				</div>
+			</div>
+
+			<!-- Product Info -->
+			<div class="product-info">
+				<h1 class="product-title">@Model.ProductName</h1>
+
+				@* <div class="product-rating">
+					<div class="stars">
+						<i class="fas fa-star"></i>
+						<i class="fas fa-star"></i>
+						<i class="fas fa-star"></i>
+						<i class="fas fa-star"></i>
+						<i class="fas fa-star"></i>
+					</div>
+					<span class="rating-count">(42 đánh giá)</span>
+				</div> *@
+
+				<div class="product-price">
+					<span class="current-price">@Model.Price.ToString("c0", new System.Globalization.CultureInfo("vi-VN"))</span>
+					<span class="original-price">@Model.Price.ToString("c0", new System.Globalization.CultureInfo("vi-VN"))</span>
+					<span class="product-discount">-5%</span>
+				</div>
+
+				<p class="product-short-description">
+					@{
+        if (!string.IsNullOrEmpty(Model.Description)) {
+            @Model.Description
+        } else {
+            @:Không có mô tả
+        }
+    }
+				</p>
+
+				<div class="product-meta">
+					<div class="product-meta-item">
+						<span class="meta-label">Tình trạng:</span>
+						<span class="meta-value">
+							@{
+								if (Model.Quantity > 0)
+								{
+									@:Còn hàng (@Model.Quantity)
+								}
+								else
+								{
+									@:Hết hàng
+								}
+							}
+						</span>
+					</div>
+					<div class="product-meta-item">
+						<span class="meta-label">Danh mục:</span>
+						<span class="meta-value">@Model.Brand.BrandName</span>
+					</div>
+					<div class="product-meta-item">
+						<span class="meta-label">Thương hiệu:</span>
+						<span class="meta-value">@Model.ProductType.TypeName</span>
+					</div>
+				</div>
+
+				@* <div class="product-benefits">
+					<h4>Lợi ích chính:</h4>
+					<div class="benefit-item">
+						<i class="fas fa-check"></i>
+						<span>Thanh lọc cơ thể</span>
+					</div>
+					<div class="benefit-item">
+						<i class="fas fa-check"></i>
+						<span>Tăng cường năng lượng</span>
+					</div>
+					<div class="benefit-item">
+						<i class="fas fa-check"></i>
+						<span>Cải thiện tiêu hóa</span>
+					</div>
+					<div class="benefit-item">
+						<i class="fas fa-check"></i>
+						<span>Giảm mỡ bụng</span>
+					</div>
+				</div> *@
+
+				<div class="product-actions-detail">
+					<div class="quantity-selector">
+						<span class="quantity-label">Số lượng:</span>
+						<div class="quantity-controls">
+							<button class="quantity-btn">
+								<i class="fas fa-minus"></i>
+							</button>
+							<input type="number" id="quantity" class="quantity-input" value="1" min="1" max="50">
+							<button class="quantity-btn" onclick="increaseQuantity()">
+								<i class="fas fa-plus"></i>
+							</button>
+						</div>
+					</div>
+					<form id="add-to-cart-form" method="post">
+						<input id="UserId-Cart" type="text" hidden name="userId"
+							   value="@(user!=null?user.Id:"")" />
+						<input id="ProductId-Cart" type="number" hidden name="productId"
+							   value="@Model.Id" />
+						<input hidden id="Quantity-Cart" type="number" name="quantity" value="1">
+					<div class="action-buttons">
+							@if (Model.Quantity != 0)
+							{
+								if (SignInManager.IsSignedIn(User))
+								{
+									<button id="button-addTOCart" type="submit" class="add-to-cart-btn-detail">
+										<i class="fas fa-shopping-cart"></i>
+										Thêm vào giỏ hàng
+									</button>
+								}
+								else
+								{
+									<a id="button-addTOCart" id="login" asp-area="Identity" asp-page="/Account/Login"
+									   class="add-to-cart-btn-detail">
+										<i class="fas fa-shopping-cart"></i>
+										Thêm vào giỏ hàng
+									</a>
+								}
+							}
+							@if (Model.Quantity == 0)
+							{
+								<p class="text-danger">Sản phẩm hiện đã hết hàng</p>
+							}
+						@* <button class="buy-now-btn" onclick="buyNow('green-detox', getQuantity())">
+							<i class="fas fa-bolt"></i>
+							Mua ngay
+						</button> *@
+					</div>
+					</form>
+				</div>
+
+				<div class="product-guarantee">
+					<div class="guarantee-icon">
+						<i class="fas fa-leaf"></i>
+					</div>
+					<div class="guarantee-text">
+						<div class="guarantee-title">100% Nguyên liệu tự nhiên</div>
+						<div class="guarantee-description">
+							Sản phẩm được chế biến từ nguyên liệu tự nhiên, không chất bảo quản, không đường tinh
+							luyện, giúp cơ thể khỏe mạnh mỗi ngày.
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<!-- Product Tabs -->
+		<div class="product-tabs">
+			<div class="tabs-header">
+				<button class="tab-button active" onclick="openTab(event, 'description')">Mô tả</button>
+				<button class="tab-button" onclick="openTab(event, 'ingredients')">Thành phần</button>
+				<button class="tab-button" onclick="openTab(event, 'nutrition')">Thông tin dinh dưỡng</button>
+				<button class="tab-button" onclick="openTab(event, 'usage')">Hướng dẫn sử dụng</button>
+				<button class="tab-button" onclick="openTab(event, 'shipping')">Vận chuyển</button>
+			</div>
+
+			<div id="description" class="tab-content active">
+				<h3>Thông tin sản phẩm</h3>
+				<p>
+					Green Detox là sự kết hợp hoàn hảo giữa táo xanh, dưa leo, rau chân vịt và bạc hà, tạo nên một
+					thức uống detox tuyệt vời giúp thanh lọc cơ thể và tăng cường năng lượng. Với hương vị tươi mát
+					và thành phần hoàn toàn tự nhiên, Green Detox là lựa chọn lý tưởng cho những ai muốn duy trì lối
+					sống lành mạnh và cân bằng.
+				</p>
+
+				<p>
+					Nước detox Green Detox được sản xuất theo quy trình nghiêm ngặt, đảm bảo giữ nguyên dưỡng chất
+					và vitamin từ các nguyên liệu tự nhiên. Sản phẩm không chứa chất bảo quản, không đường tinh
+					luyện, phù hợp cho người muốn detox cơ thể và duy trì lối sống lành mạnh.
+				</p>
+
+				<h3>Lợi ích chính</h3>
+				<ul>
+					<li>
+						<strong>Thanh lọc cơ thể:</strong> Các thành phần tự nhiên trong Green Detox giúp loại bỏ
+						độc tố, thanh lọc gan và thận, hỗ trợ quá trình trao đổi chất hiệu quả.
+					</li>
+					<li>
+						<strong>Tăng cường năng lượng:</strong> Vitamin và khoáng chất từ táo xanh và rau chân vịt
+						giúp cung cấp năng lượng tự nhiên, giảm mệt mỏi và tăng cường sức khỏe.
+					</li>
+					<li>
+						<strong>Cải thiện tiêu hóa:</strong> Dưa leo và bạc hà có tác dụng làm mát, giúp cải thiện
+						hệ tiêu hóa và ngăn ngừa táo bón.
+					</li>
+					<li>
+						<strong>Giảm mỡ bụng:</strong> Green Detox hỗ trợ quá trình đốt cháy mỡ tự nhiên, đặc biệt
+						là vùng bụng, giúp duy trì vóc dáng cân đối.
+					</li>
+				</ul>
+
+				<p>
+					Green Detox là sản phẩm bán chạy nhất của DetoxFresh, được nhiều khách hàng tin dùng và đánh giá
+					cao về hiệu quả. Sản phẩm phù hợp cho mọi đối tượng, đặc biệt là những người bận rộn, ít thời
+					gian chăm sóc sức khỏe nhưng vẫn muốn duy trì lối sống lành mạnh.
+				</p>
+			</div>
+
+			<div id="ingredients" class="tab-content">
+				<h3>Thành phần</h3>
+				<p>
+					Green Detox được chế biến từ các nguyên liệu tự nhiên, tươi ngon và giàu dinh dưỡng. Tất cả
+					nguyên liệu đều được lựa chọn kỹ càng từ các trang trại hữu cơ, đảm bảo độ tươi ngon và giàu
+					dưỡng chất.
+				</p>
+
+				<div class="ingredients-list">
+					<span class="ingredient-tag">Táo xanh</span>
+					<span class="ingredient-tag">Dưa leo</span>
+					<span class="ingredient-tag">Rau chân vịt</span>
+					<span class="ingredient-tag">Bạc hà</span>
+					<span class="ingredient-tag">Nước tinh khiết</span>
+					<span class="ingredient-tag">Chanh</span>
+					<span class="ingredient-tag">Gừng</span>
+				</div>
+
+				<h3>Quy trình sản xuất</h3>
+				<p>
+					Quy trình sản xuất được kiểm soát nghiêm ngặt để giữ nguyên giá trị dinh dưỡng của các nguyên
+					liệu:
+				</p>
+				<ol>
+					<li>Nguyên liệu tươi được rửa sạch và khử trùng tự nhiên</li>
+					<li>Ép nước ở nhiệt độ thấp để giữ nguyên vitamin và enzyme</li>
+					<li>Kết hợp các thành phần theo công thức độc quyền</li>
+					<li>Đóng chai trong môi trường</li>
+				</ol>
+			</div>
+		</div>
+	</div>
+<main>
+
+<!-- Shop Detail Start -->
+		@*
+<div class="container-fluid pb-5">
+	<div class="row px-xl-5">
+		<div class="col-lg-5 mb-30">
+			<div id="product-carousel" class="carousel slide" data-ride="carousel">
+				<div class="carousel-inner bg-light">
+							List<ProductImage>
+								listImg = Model.Images.ToList();
+					@{
+						
+
+						if (listImg != null)
+						{
+							<div class="carousel-inner" style="height: 500px;">
+								@for (int i = 0; i < listImg.Count; i++)
+								{
+									<div class="carousel-item @(i == 0 ? "active" : "")" style="height: 100%;">
+										<img src="@listImg[i].ImageUrl"
+											 class="w-100 h-100"
+											 style="object-fit: cover; height: 100%; width: 100%;"
+											 alt="Image" />
+									</div>
+								}
+							</div>
+
+						}
+					}
+				</div>
+				<a class="carousel-control-prev" href="#product-carousel" data-slide="prev">
+					<i class="fa fa-2x fa-angle-left text-dark"></i>
+				</a>
+				<a class="carousel-control-next" href="#product-carousel" data-slide="next">
+					<i class="fa fa-2x fa-angle-right text-dark"></i>
+				</a>
+			</div>
+		</div>
+
+		<div class="col-lg-7 h-auto mb-30">
+			<div class="h-100 bg-light p-30">
+				<h3>@Model.ProductName</h3>
+				<div class="d-flex mb-3">
+					<div class="text-primary mr-2">
+						<small class="fas fa-star"></small>
+						<small class="fas fa-star"></small>
+						<small class="fas fa-star"></small>
+						<small class="fas fa-star-half-alt"></small>
+						<small class="far fa-star"></small>
+					</div>
+					<small class="pt-1">(99 Reviews)</small>
+				</div>
+				<h3 class="font-weight-semi-bold mb-4">
+					@Model.Price.ToString("c0", new System.Globalization.CultureInfo("vi-VN"))
+				</h3>
+
+				<div class="d-flex">
+					<strong class="text-dark mr-3">Hãng sản phẩm:</strong><p class="text-success">@Model.Brand.BrandName</p>
+				</div>
+				<div class="d-flex">
+					<strong class="text-dark mr-3">Loại sẩn phẩm:</strong><p class="text-success">@Model.ProductType.TypeName</p>
+				</div>
+				<div class="d-flex">
+					<strong class="text-dark mr-3">Số lượng còn:</strong><p class="border border-1 text-success">@Model.Quantity</p>
+				</div>
+				<form id="add-to-cart-form" method="post" class="d-flex align-items-center mb-4 pt-2">
+					<div class="input-group quantity" style="width: 350px;">
+
+						<input id="UserId-Cart" type="text" hidden name="userId" value="@(user!=null?user.Id:"")" />
+						<input id="ProductId-Cart" type="number" hidden name="productId" value="@Model.Id" />
+						<input hidden id="Quantity-Cart" type="number" name="quantity" value="1">
+						@if (Model.Quantity != 0)
+						{
+							if (SignInManager.IsSignedIn(User))
+							{
+								<button id="button-addTOCart" type="submit" class="btn btn-primary">
+									<i class="fa fa-shopping-cart mr-1"></i> Add To
+									Cart
+								</button>
+							}
+							else
+							{
+								<a id="button-addTOCart" id="login" asp-area="Identity" asp-page="/Account/Login" class="btn btn-primary">
+									<i class="fa fa-shopping-cart mr-1"></i> Add To
+									Cart
+								</a>
+							}
+						}
+						@if (Model.Quantity == 0)
+						{
+							<p class="text-danger">Sản phẩm hiện đã hết hàng</p>
+						}
+					</div>
+				</form>
+				<div class="d-flex pt-2">
+					<strong class="text-dark mr-2">Share on:</strong>
+					<div class="d-inline-flex">
+						<a class="text-dark px-2" href="">
+							<i class="fab fa-facebook-f"></i>
+						</a>
+						<a class="text-dark px-2" href="">
+							<i class="fab fa-twitter"></i>
+						</a>
+						<a class="text-dark px-2" href="">
+							<i class="fab fa-linkedin-in"></i>
+						</a>
+						<a class="text-dark px-2" href="">
+							<i class="fab fa-pinterest"></i>
+						</a>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="row px-xl-5">
+		<div class="col">
+			<div class="bg-light p-30">
+				<div class="nav nav-tabs mb-4">
+					<a class="nav-item nav-link text-dark active" data-toggle="tab" href="#tab-pane-1">Description</a>
+
+					<a class="nav-item nav-link text-dark" data-toggle="tab" href="#tab-pane-3">Reviews (@Model.Comments.Count())</a>
+				</div>
+				<div class="tab-content">
+					<div class="tab-pane fade show active" id="tab-pane-1">
+					</div>
+
+					<div class="tab-pane fade" id="tab-pane-3">
+						<div class="row">
+							<div class="col-md-12">
+								<h4 class="mb-4">Đánh giá cho sản phẩm @Model.ProductName</h4>
+								@foreach (var item in Model.Comments)
+								{
+									<div class="media mb-4">
+										<img src="https://media.istockphoto.com/id/1337144146/vector/default-avatar-profile-icon-vector.jpg?s=612x612&w=0&k=20&c=BIbFwuv7FxTWvh5S3vB6bkT0Qv8Vn8N5Ffseq84ClGI=" alt="Image" class="img-fluid mr-3 mt-1" style="width: 45px;">
+										<div class="media-body">
+											<h6>@item.CustomerName<small> - <i>@(item.CreatedDate.ToString("MMMM-dd-yyyy"))</i></small></h6>
+											<div class="text-primary mb-2">
+												@for (int i = 1; i <= item.Rate; i++)
+												{
+													<i class="fas fa-star"></i>
+												}
+												@for (int i = 1; i <= 5 - item.Rate; i++)
+												{
+													<i class="far fa-star"></i>
+												}
+											</div>
+											<p>@item.Message</p>
+										</div>
+									</div>
+								}
+							</div>
+
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<!-- Shop Detail End -->
+<!-- Products Start -->
+<div class="container-fluid py-5">
+	<h2 class="section-title position-relative text-uppercase mx-xl-5 mb-4"><span class="bg-secondary pr-3">You May Also Like</span></h2>
+	<div class="row px-xl-5">
+		<div class="col">
+			<div class="owl-carousel related-carousel">
+				<div class="product-item bg-light">
+					<div class="product-img position-relative overflow-hidden">
+						<img class="img-fluid w-100" src="img/product-1.jpg" alt="">
+						<div class="product-action">
+							<a class="btn btn-outline-dark btn-square" href=""><i class="fa fa-shopping-cart"></i></a>
+							<a class="btn btn-outline-dark btn-square" href=""><i class="far fa-heart"></i></a>
+							<a class="btn btn-outline-dark btn-square" href=""><i class="fa fa-sync-alt"></i></a>
+							<a class="btn btn-outline-dark btn-square" href=""><i class="fa fa-search"></i></a>
+						</div>
+					</div>
+					<div class="text-center py-4">
+						<a class="h6 text-decoration-none text-truncate" href="">Product Name Goes Here</a>
+						<div class="d-flex align-items-center justify-content-center mt-2">
+							<h5>$123.00</h5><h6 class="text-muted ml-2"><del>$123.00</del></h6>
+						</div>
+						<div class="d-flex align-items-center justify-content-center mb-1">
+							<small class="fa fa-star text-primary mr-1"></small>
+							<small class="fa fa-star text-primary mr-1"></small>
+							<small class="fa fa-star text-primary mr-1"></small>
+							<small class="fa fa-star text-primary mr-1"></small>
+							<small class="fa fa-star text-primary mr-1"></small>
+							<small>(99)</small>
+						</div>
+					</div>
+				</div>
+				<div class="product-item bg-light">
+					<div class="product-img position-relative overflow-hidden">
+						<img class="img-fluid w-100" src="img/product-2.jpg" alt="">
+						<div class="product-action">
+							<a class="btn btn-outline-dark btn-square" href=""><i class="fa fa-shopping-cart"></i></a>
+							<a class="btn btn-outline-dark btn-square" href=""><i class="far fa-heart"></i></a>
+							<a class="btn btn-outline-dark btn-square" href=""><i class="fa fa-sync-alt"></i></a>
+							<a class="btn btn-outline-dark btn-square" href=""><i class="fa fa-search"></i></a>
+						</div>
+					</div>
+					<div class="text-center py-4">
+						<a class="h6 text-decoration-none text-truncate" href="">Product Name Goes Here</a>
+						<div class="d-flex align-items-center justify-content-center mt-2">
+							<h5>$123.00</h5><h6 class="text-muted ml-2"><del>$123.00</del></h6>
+						</div>
+						<div class="d-flex align-items-center justify-content-center mb-1">
+							<small class="fa fa-star text-primary mr-1"></small>
+							<small class="fa fa-star text-primary mr-1"></small>
+							<small class="fa fa-star text-primary mr-1"></small>
+							<small class="fa fa-star text-primary mr-1"></small>
+							<small class="fa fa-star text-primary mr-1"></small>
+							<small>(99)</small>
+						</div>
+					</div>
+				</div>
+				<div class="product-item bg-light">
+					<div class="product-img position-relative overflow-hidden">
+						<img class="img-fluid w-100" src="img/product-3.jpg" alt="">
+						<div class="product-action">
+							<a class="btn btn-outline-dark btn-square" href=""><i class="fa fa-shopping-cart"></i></a>
+							<a class="btn btn-outline-dark btn-square" href=""><i class="far fa-heart"></i></a>
+							<a class="btn btn-outline-dark btn-square" href=""><i class="fa fa-sync-alt"></i></a>
+							<a class="btn btn-outline-dark btn-square" href=""><i class="fa fa-search"></i></a>
+						</div>
+					</div>
+					<div class="text-center py-4">
+						<a class="h6 text-decoration-none text-truncate" href="">Product Name Goes Here</a>
+						<div class="d-flex align-items-center justify-content-center mt-2">
+							<h5>$123.00</h5><h6 class="text-muted ml-2"><del>$123.00</del></h6>
+						</div>
+						<div class="d-flex align-items-center justify-content-center mb-1">
+							<small class="fa fa-star text-primary mr-1"></small>
+							<small class="fa fa-star text-primary mr-1"></small>
+							<small class="fa fa-star text-primary mr-1"></small>
+							<small class="fa fa-star text-primary mr-1"></small>
+							<small class="fa fa-star text-primary mr-1"></small>
+							<small>(99)</small>
+						</div>
+					</div>
+				</div>
+				<div class="product-item bg-light">
+					<div class="product-img position-relative overflow-hidden">
+						<img class="img-fluid w-100" src="img/product-4.jpg" alt="">
+						<div class="product-action">
+							<a class="btn btn-outline-dark btn-square" href=""><i class="fa fa-shopping-cart"></i></a>
+							<a class="btn btn-outline-dark btn-square" href=""><i class="far fa-heart"></i></a>
+							<a class="btn btn-outline-dark btn-square" href=""><i class="fa fa-sync-alt"></i></a>
+							<a class="btn btn-outline-dark btn-square" href=""><i class="fa fa-search"></i></a>
+						</div>
+					</div>
+					<div class="text-center py-4">
+						<a class="h6 text-decoration-none text-truncate" href="">Product Name Goes Here</a>
+						<div class="d-flex align-items-center justify-content-center mt-2">
+							<h5>$123.00</h5><h6 class="text-muted ml-2"><del>$123.00</del></h6>
+						</div>
+						<div class="d-flex align-items-center justify-content-center mb-1">
+							<small class="fa fa-star text-primary mr-1"></small>
+							<small class="fa fa-star text-primary mr-1"></small>
+							<small class="fa fa-star text-primary mr-1"></small>
+							<small class="fa fa-star text-primary mr-1"></small>
+							<small class="fa fa-star text-primary mr-1"></small>
+							<small>(99)</small>
+						</div>
+					</div>
+				</div>
+				<div class="product-item bg-light">
+					<div class="product-img position-relative overflow-hidden">
+						<img class="img-fluid w-100" src="img/product-5.jpg" alt="">
+						<div class="product-action">
+							<a class="btn btn-outline-dark btn-square" href=""><i class="fa fa-shopping-cart"></i></a>
+							<a class="btn btn-outline-dark btn-square" href=""><i class="far fa-heart"></i></a>
+							<a class="btn btn-outline-dark btn-square" href=""><i class="fa fa-sync-alt"></i></a>
+							<a class="btn btn-outline-dark btn-square" href=""><i class="fa fa-search"></i></a>
+						</div>
+					</div>
+					<div class="text-center py-4">
+						<a class="h6 text-decoration-none text-truncate" href="">Product Name Goes Here</a>
+						<div class="d-flex align-items-center justify-content-center mt-2">
+							<h5>$123.00</h5><h6 class="text-muted ml-2"><del>$123.00</del></h6>
+						</div>
+						<div class="d-flex align-items-center justify-content-center mb-1">
+							<small class="fa fa-star text-primary mr-1"></small>
+							<small class="fa fa-star text-primary mr-1"></small>
+							<small class="fa fa-star text-primary mr-1"></small>
+							<small class="fa fa-star text-primary mr-1"></small>
+							<small class="fa fa-star text-primary mr-1"></small>
+							<small>(99)</small>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<!-- Products End --> *@
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+
+<script>
+		$(document).ready(function () {
+		$('#add-to-cart-form').submit(function (e) {
+			e.preventDefault();
+
+			var formData = $(this).serialize();
+
+				$.ajax({
+		type: 'POST',
+		url: '@Url.Action("AddToCart", "CustomerCarts")',
+		data: formData,
+		success: function (data) {
+			$('#userCart').html(data);
+		},
+		error: function (xhr, status, error) {
+			console.error('Lỗi khi thêm vào giỏ hàng:', error);
+		}
+	});
+
+
+			return false;
+		});
+	});
+
+	document.getElementById("tab-pane-1").innerHTML = `@Html.Raw(Model.Description)`;
+</script>

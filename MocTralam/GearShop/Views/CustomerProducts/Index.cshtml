@@ -1,0 +1,411 @@
+﻿@using GearShop.Models
+@model IPagedList<Product>
+@using X.PagedList
+@using X.PagedList.Mvc.Core
+@{
+	ViewData["Title"] = "Mua Sắm";
+}
+
+<main class="shop-container">
+    <div class="shop-layout">
+        <!-- Sidebar -->
+        <aside class="shop-sidebar">
+            <form asp-action="Index">
+                <!-- Filter Header -->
+                <div class="filter-section">
+                    <div class="filter-header">
+                        <h3 class="filter-title">Bộ lọc</h3>
+                        <button type="reset" class="reset-filter-btn">
+                            <i class="fas fa-filter"></i>
+                            Đặt lại
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Price Filter -->
+                <div class="filter-section">
+                    <h4 class="filter-title">Tìm theo giá</h4>
+                    <div class="filter-options">
+                        @foreach (var item in ViewBag.priceSelected)
+                        {
+                            <div class="filter-option"> 
+                                <div class="filter-option-left">
+                                    <input type="radio" value="@item.Choice" name="choice" value="all" @(ViewBag.CurrentFilter.choice == item.Choice ? "checked" : "") onclick="submit()">
+                                    <label for="price-all">@item.Name</label>
+                                </div>
+                                <span class="filter-count">24</span>
+                            </div>
+                        }   
+                    </div>
+                </div>
+
+                <!-- Brand Filter -->
+                <div class="filter-section">
+                    <h4 class="filter-title">Tìm theo hãng</h4>
+                    <div class="filter-options">
+                        <div class="filter-option all-option">
+                            <div class="filter-option-left">
+                                <span style="width: 18px;"></span>
+                                <label>Tất cả các hãng</label>
+                            </div>
+                            <span class="filter-count">24</span>
+                        </div>
+                        <div class="filter-option">
+                            <div class="filter-option-left">
+                                <input type="checkbox" name="brand" value="detoxfresh" id="brand-1">
+                                <label for="brand-1">DetoxFresh</label>
+                            </div>
+                            <span class="filter-count">15</span>
+                        </div>
+                        <div class="filter-option">
+                            <div class="filter-option-left">
+                                <input type="checkbox" name="brand" value="greenlife" id="brand-2">
+                                <label for="brand-2">GreenLife</label>
+                            </div>
+                            <span class="filter-count">6</span>
+                        </div>
+                        <div class="filter-option">
+                            <div class="filter-option-left">
+                                <input type="checkbox" name="brand" value="naturejuice" id="brand-3">
+                                <label for="brand-3">NatureJuice</label>
+                            </div>
+                            <span class="filter-count">3</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Category Filter -->
+                <div class="filter-section">
+                    <h4 class="filter-title">Tìm theo thể loại</h4>
+                    <div class="filter-options">
+                        <div class="filter-option all-option">
+                            <div class="filter-option-left">
+                                <span style="width: 18px;"></span>
+                                <label>Tất cả các loại</label>
+                            </div>
+                            <span class="filter-count">24</span>
+                        </div>
+                        <div class="filter-option">
+                            <div class="filter-option-left">
+                                <input type="checkbox" name="category" value="trai-cay" id="cat-1">
+                                <label for="cat-1">Nước detox trái cây</label>
+                            </div>
+                            <span class="filter-count">12</span>
+                        </div>
+                        <div class="filter-option">
+                            <div class="filter-option-left">
+                                <input type="checkbox" name="category" value="rau-cu" id="cat-2">
+                                <label for="cat-2">Nước detox rau củ</label>
+                            </div>
+                            <span class="filter-count">8</span>
+                        </div>
+                        <div class="filter-option">
+                            <div class="filter-option-left">
+                                <input type="checkbox" name="category" value="combo" id="cat-3">
+                                <label for="cat-3">Combo detox</label>
+                            </div>
+                            <span class="filter-count">4</span>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="shop-main">
+            <!-- Controls -->
+            <div class="shop-controls">
+                <div class="view-controls">
+                    <!-- <button class="view-btn active" onclick="setGridView(3)">
+                        <i class="fas fa-th-large"></i>
+                    </button>
+                    <button class="view-btn" onclick="setGridView(4)">
+                        <i class="fas fa-th"></i>
+                    </button>
+                    <button class="view-btn" onclick="setListView()">
+                        <i class="fas fa-bars"></i>
+                    </button> -->
+                </div>
+
+                <div class="sort-controls">
+                    <div class="dropdown">
+                        <button class="dropdown-btn" onclick="toggleDropdown('sortDropdown')">
+                                Sắp xếp
+                                <i class="fas fa-chevron-down"></i>
+                            </button>
+                            <div class="dropdown-menu" id="sortDropdown">
+                                <a href="#" class="dropdown-item" onclick="sortProducts('latest')">Mới nhất</a>
+                                <a href="#" class="dropdown-item" onclick="sortProducts('popularity')">Phổ biến</a>
+                                <a href="#" class="dropdown-item" onclick="sortProducts('price-low')">Giá thấp đến
+                                    cao</a>
+                                <a href="#" class="dropdown-item" onclick="sortProducts('price-high')">Giá cao đến
+                                    thấp</a>
+                            </div>
+                    </div>
+
+                    <div class="dropdown">
+                        <button class="dropdown-btn" onclick="toggleDropdown('showDropdown')">
+                            Hiển thị
+                            <i class="fas fa-chevron-down"></i>
+                        </button>
+                        <div class="dropdown-menu" id="showDropdown">
+                            <a href="#" class="dropdown-item" onclick="setItemsPerPage(12)">12</a>
+                            <a href="#" class="dropdown-item" onclick="setItemsPerPage(24)">24</a>
+                            <a href="#" class="dropdown-item" onclick="setItemsPerPage(36)">36</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Products Grid -->
+            <div class="products-grid" id="productsGrid">
+                
+                @foreach (var item in Model)
+                {
+
+                    <a asp-action="Details" asp-route-Id=@item.Id class="product-card">
+                        <div class="product-image">
+                            @if (item.Images.Count() != 0)
+                            {
+                                <img src="@((item.Images.Where(a=>a.Isthumbnail == 1)).Count() == 1 ? item.Images.FirstOrDefault(a=>a.Isthumbnail == 1)?.ImageUrl:item.Images.FirstOrDefault()?.ImageUrl)"
+                                alt="Thanh">
+                            }
+                            else
+                            {
+                                <img src="~/sourceimg/NoImage.jpg" alt="" />
+                            }
+                        </div>
+                        <div class="product-info">
+                            <div class="product-name">@item.ProductName</div>
+                            <div class="product-prices">
+                                <div class="original-price">
+                                    @((item.Price + (item.Price *
+                                        (decimal)0.05)).ToString("c0", new
+                                        System.Globalization.CultureInfo("vi-VN")))
+                                </div>
+                                <div class="current-price">
+                                    @item.Price.ToString("c0", new
+                                             System.Globalization.CultureInfo("vi-VN"))
+                                </div>
+                                <div class="product-actions">
+                                    <button class="add-to-cart-btn">
+                                        <i class="fas fa-shopping-cart"></i>
+                                        Thêm vào giỏ
+                                    </button>
+                                    <button class="view-product-btn">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </a>
+                }
+            </div>
+
+            <!-- Pagination -->
+            <div class="pagination-container">
+                <ul class="pagination" id="pagination">
+                    <li class="page-item disabled">
+                        <a class="page-link" href="#" onclick="goToPage(1)">First</a>
+                    </li>
+                    <li class="page-item disabled">
+                        <a class="page-link" href="#" onclick="previousPage()">‹</a>
+                    </li>
+                    <li class="page-item active">
+                        <a class="page-link" href="#" onclick="goToPage(1)">1</a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link" href="#" onclick="goToPage(2)">2</a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link" href="#" onclick="goToPage(3)">3</a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link" href="#" onclick="nextPage()">›</a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link" href="#" onclick="goToPage(3)">Last</a>
+                    </li>
+                </ul>
+            </div>
+        </main>
+    </div>
+</main>
+
+<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.bundle.min.js"></script>
+<script src="lib/easing/easing.min.js"></script>
+<script src="lib/owlcarousel/owl.carousel.min.js"></script>
+
+<!-- Contact Javascript File -->
+<script src="mail/jqBootstrapValidation.min.js"></script>
+<script src="mail/contact.js"></script>
+
+<!-- Shop Start -->
+@* <div class="container-fluid">
+	<div class="row px-xl-5">
+		<!-- Shop Sidebar Start -->
+		<form class="col-lg-3 col-md-4" asp-action="        ">
+			<button class="btn" type="reset"><i class="fa fa-filter"></i>Đặt lại lọc</button>
+			<!-- Price Start -->
+			<h5 class="section-title position-relative text-uppercase mb-3"><span class="bg-secondary pr-3">Tìm theo giá</span></h5>
+			<div class="bg-light p-4 mb-30">
+				@foreach (var item in ViewBag.priceSelected)
+				{
+					<div class="custom-control custom-checkbox d-flex align-items-center justify-content-between mb-3">
+						<input style="height:20px;width:20px" type="radio" value="@item.Choice" name="choice" @(ViewBag.CurrentFilter.choice == item.Choice ? "checked" : "") onclick="submit()">
+						<label for="price-1">@item.Name</label>
+					</div>
+				}
+
+
+			</div>
+			<!-- Price End -->
+			<!-- Color Start -->
+			<h5 class="section-title position-relative text-uppercase mb-3"><span class="bg-secondary pr-3">Tìm theo hãng</span></h5>
+			<div class="bg-light p-4 mb-30">
+				<div class="custom-control custom-checkbox d-flex align-items-center justify-content-between mb-3">
+					<input type="button" class="custom-control-input" disabled id="color-all">
+					<label class="custom-control-label" for="price-all">Tất cả các hãng</label>
+					<span class="badge border font-weight-normal">@ViewBag.CountAll</span>
+				</div>
+				@foreach (var item in (List<Brand>)ViewBag.BrandsList)
+				{
+					<div class="custom-control d-flex align-items-center justify-content-between mb-3">
+						<input style="height:20px;width:20px" @(ViewBag.CurrentFilter.brandId.Contains(item.Id) ? "checked" : "") type="checkbox" name="BrandId" value="@item.Id" onclick="submit()">
+						<label class="form-label" for="price-all">@item.BrandName</label>
+						<span class="badge border font-weight-normal">@item.Products.Count</span>
+					</div>
+				}
+
+			</div>
+			<!-- Color End -->
+			<!-- Size Start -->
+			<h5 class="section-title position-relative text-uppercase mb-3"><span class="bg-secondary pr-3">Tìm theo thể loại</span></h5>
+			<div class="bg-light p-4 mb-30">
+				<div class="custom-control custom-checkbox d-flex align-items-center justify-content-between mb-3">
+					<input type="button" class="custom-control-input" disabled id="color-all">
+					<label class="custom-control-label" for="size-all">Tất cả các loại</label>
+					<span class="badge border font-weight-normal">@ViewBag.CountAll</span>
+				</div>
+				@foreach (var item in (List<ProductType>)ViewBag.ProductTypes)
+				{
+					<div class="custom-control custom-checkbox d-flex align-items-center justify-content-between mb-3">
+						<input style="height:20px;width:20px" @(ViewBag.CurrentFilter.typeId.Contains(item.Id) ? "checked" : "") type="checkbox" value="@item.Id" name="typeId" onclick="submit()">
+						<label class="form-lable" for="size-all">@item.TypeName</label>
+						<span class="badge border font-weight-normal">@item.Products.Count</span>
+					</div>
+				}
+
+			</div>
+			<!-- Size End -->
+		</form>
+		<!-- Shop Sidebar End -->
+		<!-- Shop Product Start -->
+		<div class="col-lg-9 col-md-8">
+			<div class="row pb-3">
+				<div class="col-12 pb-1">
+					<div class="d-flex align-items-center justify-content-between mb-4">
+						<div>
+							<button class="btn btn-sm btn-light"><i class="fa fa-th-large"></i></button>
+							<button class="btn btn-sm btn-light ml-2"><i class="fa fa-bars"></i></button>
+						</div>
+						<div class="ml-2">
+							<div class="btn-group">
+								<button type="button" class="btn btn-sm btn-light dropdown-toggle" data-toggle="dropdown">Sorting</button>
+								<div class="dropdown-menu dropdown-menu-right">
+									<a class="dropdown-item" href="#">Latest</a>
+									<a class="dropdown-item" href="#">Popularity</a>
+									<a class="dropdown-item" href="#">Best Rating</a>
+								</div>
+							</div>
+							<div class="btn-group ml-2">
+								<button type="button" class="btn btn-sm btn-light dropdown-toggle" data-toggle="dropdown">Showing</button>
+								<div class="dropdown-menu dropdown-menu-right">
+									<a class="dropdown-item" href="#">10</a>
+									<a class="dropdown-item" href="#">20</a>
+									<a class="dropdown-item" href="#">30</a>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				@foreach (var item in Model)
+				{
+					<a class="col-lg-3 col-md-6 col-sm-6 pb-1" asp-action="Details" asp-route-Id=@item.Id>
+						<div class="product-item bg-light mb-4">
+							<div class="product-img position-relative overflow-hidden" style="width: 100%; height: 250px; display: flex; align-items: center; justify-content: center; overflow: hidden;">
+								@if (item.Images.Count() != 0)
+								{
+									<img class="img-fluid" src="@((item.Images.Where(a=>a.Isthumbnail == 1)).Count() == 1 ? item.Images.FirstOrDefault(a=>a.Isthumbnail == 1)?.ImageUrl:item.Images.FirstOrDefault()?.ImageUrl)" alt="" style="width: 100%; height: 100%; object-fit: cover;">
+								}
+								else
+								{
+									<img class="img-fluid" src="~/sourceimg/NoImage.jpg" alt="" style="width: 100%; height: 100%; object-fit: cover;">
+								}
+								<div class="product-action">
+									<!-- Action buttons -->
+								</div>
+							</div>
+							<div class="text-center py-4">
+								<p class="h6 text-decoration-none text-truncate" style="font-size:13px;display: inline-block; width: 30ch; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">@item.ProductName</p>
+								<div class="d-flex align-items-center justify-content-center mt-2">
+									<h5></h5><h6 class="ml-2 text-success"><del>@((item.Price + (item.Price * (decimal)0.05)).ToString("c0", new System.Globalization.CultureInfo("vi-VN")))</del></h6>
+								</div>
+								<div class="d-flex align-items-center justify-content-center mt-2">
+									<h5></h5><h5 class="ml-2">@item.Price.ToString("c0", new System.Globalization.CultureInfo("vi-VN"))</h5>
+								</div>
+
+							</div>
+						</div>
+					</a>
+
+				}
+
+
+
+
+
+				<div class="col-12">
+					@Html.PagedListPager(Model, page => Url.Action("Index", new
+						{
+							page,
+							search = ViewBag.CurrentFilter.search,
+							brandId = ViewBag.CurrentFilter.brandId,
+							typeId = ViewBag.CurrentFilter.typeId,
+							size = ViewBag.CurrentFilter.size,
+							choice = ViewBag.CurrentFilter.choice
+
+						}), new PagedListRenderOptions
+								{
+									DisplayLinkToFirstPage = PagedListDisplayMode.Always,
+									DisplayLinkToLastPage = PagedListDisplayMode.Always,
+									DisplayLinkToPreviousPage = PagedListDisplayMode.Always,
+									DisplayLinkToNextPage = PagedListDisplayMode.Always,
+									DisplayLinkToIndividualPages = true,
+									DisplayPageCountAndCurrentLocation = false,
+									MaximumPageNumbersToDisplay = 5,
+									DisplayEllipsesWhenNotShowingAllPageNumbers = true,
+									EllipsesFormat = "…",
+									LinkToFirstPageFormat = "First",
+									LinkToPreviousPageFormat = "<",
+									LinkToNextPageFormat = ">",
+									LinkToLastPageFormat = "Last",
+									PageCountAndCurrentLocationFormat = "Page {0} of {1}.",
+									ItemSliceAndTotalFormat = "Showing items {0} through {1} of {2}.",
+									FunctionToDisplayEachPageNumber = (pageNumber => pageNumber.ToString()),
+									ClassToApplyToFirstListItemInPager = "first",
+									ClassToApplyToLastListItemInPager = "last",
+									ContainerDivClasses = new[] { "pagination-container" },
+									UlElementClasses = new[] { "pagination" },
+									LiElementClasses = new[] { "page-item" },
+									PageClasses = new[] { "page-link" }
+								})
+				</div>
+			</div>
+		</div>
+		<!-- Shop Product End -->
+	</div>
+</div> *@
+<!-- Shop End -->

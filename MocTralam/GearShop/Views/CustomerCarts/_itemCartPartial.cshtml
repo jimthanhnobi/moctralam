@@ -1,0 +1,191 @@
+﻿@model IEnumerable<GearShop.Models.Cart>
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<partial name="_NotificationPartial" />
+
+<div class="cart-items-header">
+    <div class="items-count" id="itemsCount">3 sản phẩm</div>
+    <button class="clear-cart-btn" onclick="clearCart()">
+        <i class="fas fa-trash"></i>
+        Xóa tất cả
+    </button>
+</div>
+
+<div class="cart-items-list" id="cartItemsList">
+    @foreach (var item in Model)
+    {
+        <div class="cart-item" data-id="@item.Id">
+            <input type="checkbox" class="form-check-input" style="height:15px;width:15px" name="productId" value="@item.Id" />
+            <div class="item-image">
+                @if (item.Product.Images.Any())
+                {
+                    <img src="@(item.Product.Images.FirstOrDefault(a => a.Isthumbnail == 1)?.ImageUrl ?? item.Product.Images.FirstOrDefault()?.ImageUrl)" alt="@item.Product.ProductName">
+                }
+                else
+                {
+                    <img src="~/sourceimg/NoImage.jpg" alt="NoImage">
+                }
+            </div>
+            <div class="item-details">
+                <div class="item-name">@item.Product.ProductName</div>
+                <div class="item-description">@item.Product.Description</div>
+                <div class="item-price">
+                    <span class="current-price" data-price="@item.Product.Price">
+                        @item.Product.Price.ToString("c0", new System.Globalization.CultureInfo("vi-VN"))
+                    </span>
+                    <span class="item-badge">Mới</span>
+                </div>
+            </div>
+            <div class="item-actions">
+                <div class="quantity-controls">
+                    <button class="quantity-btn" data-action="decrease">
+                        <i class="fas fa-minus"></i>
+                    </button>
+                    <input type="number" class="quantity-input" value="@item.Quantity" readonly data-max="@item.Product.Quantity">
+                    <button class="quantity-btn" data-action="increase">
+                        <i class="fas fa-plus"></i>
+                    </button>
+                </div>
+                <div class="item-total">
+                    @((item.Product.Price * item.Quantity).ToString("c0", new System.Globalization.CultureInfo("vi-VN")))
+                </div>
+                <form method="post" data-id="@item.Id">
+                    <input type="number" name="id" value="@item.Id" hidden />
+                    <button class="remove-item-btn" type="submit">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </form>
+            </div>
+        </div>
+    }
+</div>
+
+<div hidden id="selectedTotal"></div>
+<div hidden id="selectedCartInputs"></div>
+
+<script>
+    $(document).ready(function () {
+        function saveCheckboxStates() {
+            var checkedProductIds = [];
+            $('.cart-item input[name="productId"]').each(function () {
+                if ($(this).is(':checked')) {
+                    checkedProductIds.push($(this).val());
+                }
+            });
+            localStorage.setItem('checkedProductIds', JSON.stringify(checkedProductIds));
+            updateHiddenInputs();
+            calculateSelectedTotal();
+        }
+
+        function restoreCheckboxStates() {
+            var checkedProductIds = JSON.parse(localStorage.getItem('checkedProductIds')) || [];
+            $('.cart-item input[name="productId"]').each(function () {
+                var productId = $(this).val();
+                if (checkedProductIds.includes(productId)) {
+                    $(this).prop('checked', true);
+                }
+            });
+        }
+
+        function calculateSelectedTotal() {
+            var total = 0;
+            $('.cart-item input[name="productId"]:checked').each(function () {
+                var cartItem = $(this).closest('.cart-item');
+                var price = parseInt(cartItem.find('.current-price').data('price'), 10);
+                var quantity = parseInt(cartItem.find('.quantity-input').val(), 10);
+                total += price * quantity;
+            });
+            $('#selectedTotal').text(total.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' }));
+
+            $('#finalTotal').text(total.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' }));
+        }
+
+        function updateHiddenInputs() {
+            $('#selectedCartInputs').empty();
+            $('.cart-item input[name="productId"]:checked').each(function () {
+                var id = $(this).val();
+                $('#selectedCartInputs').append(`<input type="hidden" name="itemCarts" value="${id}" />`);
+            });
+        }
+
+        restoreCheckboxStates();
+        calculateSelectedTotal();
+
+        $('#cartItemsList').on('change', '.cart-item input[name="productId"]', function () {
+            saveCheckboxStates();
+        });
+
+        $('#cartItemsList').on('click', '.quantity-btn', function () {
+            var button = $(this);
+            var action = button.data('action');
+            var cartItem = button.closest('.cart-item');
+            var id = cartItem.data('id');
+            var input = cartItem.find('.quantity-input');
+            var currentQuantity = parseInt(input.val(), 10);
+            var newQuantity = currentQuantity;
+            var maxQuantity = parseInt(input.data('max'), 10);
+
+            if (action === 'increase' ) {
+                if (currentQuantity < maxQuantity) {
+                    newQuantity += 1;
+                } else {
+                    return;
+                }
+            } else if (action === 'decrease' && currentQuantity > 1) {
+                newQuantity -= 1;
+            }
+
+            if (newQuantity !== currentQuantity) {
+                input.val(newQuantity);
+                var price = parseInt(cartItem.find('.current-price').data('price'), 10);
+                var total = price * newQuantity;
+                cartItem.find('.item-total').text(total.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' }));
+
+                calculateSelectedTotal();
+
+                $.ajax({
+                    type: 'POST',
+                    url: '@Url.Action("Edit", "CustomerCarts")',
+                    data: { id: id, quantity: newQuantity },
+                    success: function () {
+                        // Không cần làm gì vì giao diện đã được cập nhật
+                    },
+                    error: function (xhr, status, error) {
+                        console.error('Error updating quantity', error);
+                        input.val(currentQuantity);
+                        var originalTotal = price * currentQuantity;
+                        cartItem.find('.item-total').text(originalTotal.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' }));
+                        calculateSelectedTotal();
+                    }
+                });
+            }
+        });
+
+        $('#cartItemsList').on('submit', 'form', function (e) {
+            e.preventDefault();
+            var form = $(this);
+            var formData = form.serialize();
+            var id = form.data('id');
+
+            $.ajax({
+                type: 'POST',
+                url: '@Url.Action("DeleteConfirmed", "CustomerCarts")',
+                data: formData,
+                success: function () {
+                    form.closest('.cart-item').remove();
+                    calculateSelectedTotal();
+                    saveCheckboxStates();
+                },
+                error: function (xhr, status, error) {
+                    console.error('Error removing item', error);
+                }
+            });
+        });
+    });
+    function clearCart() {
+        alert('Chức năng xóa tất cả chưa được triển khai!');
+    }
+
+    $('form[asp-action="CreatePayment"]').on('submit', function () {
+        updateHiddenInputs(); // đảm bảo inputs được cập nhật lần cuối
+    });
+</script>

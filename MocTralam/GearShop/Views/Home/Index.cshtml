@@ -1,0 +1,517 @@
+﻿@{
+	ViewData["Title"] = "";
+}
+
+<!-- Carousel Start -->
+@* <div class="container-fluid mb-3">
+	<div class="row px-xl-5">
+		<div class="col-lg-8">
+			<div id="header-carousel" class="carousel slide carousel-fade mb-30 mb-lg-0" data-ride="carousel">
+				<ol class="carousel-indicators">
+					<li data-target="#header-carousel" data-slide-to="0" class="active"></li>
+					<li data-target="#header-carousel" data-slide-to="1"></li>
+					<li data-target="#header-carousel" data-slide-to="2"></li>
+				</ol>
+				<div class="carousel-inner">
+					<div class="carousel-item position-relative active" style="height: 430px;">
+						<img class="position-absolute w-100 h-100" src="https://file.hstatic.net/200000722513/file/thang_04_laptop_gaming_ld_pc.jpg" style="object-fit: cover;">
+
+					</div>
+					<div class="carousel-item position-relative" style="height: 430px;">
+						<img class="position-absolute w-100 h-100" src="https://d28jzcg6y4v9j1.cloudfront.net/media/social/2024/06/12/hinh_1_1718203537539.jpg" style="object-fit: cover;">
+
+					</div>
+					<div class="carousel-item position-relative" style="height: 430px;">
+						<img class="position-absolute w-100 h-100" src="https://file.hstatic.net/200000722513/file/thang_04_pc_tang_man_banner_web_slider_800x400.jpg" style="object-fit: cover;">
+
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="col-lg-4">
+			<div class="product-offer mb-30" style="height: 200px;">
+				<img class="img-fluid" src="https://pcmarket.vn/media/product/10570_637783762740907156_untitled_1.png" alt="">
+
+			</div>
+			<div class="product-offer mb-30" style="height: 200px;">
+				<img class="img-fluid" src="https://cdn.tgdd.vn/GameApp/4/242313/Screentshots/sekiro-shadows-die-twice-12-06-2021-2.jpg" alt="">
+
+			</div>
+		</div>
+	</div>
+</div> *@
+
+@*  New Product *@
+
+<main>
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <div class="hero-content">
+                <div class="hero-text">
+                    <span class="badge">Sản phẩm mới</span>
+                    <h1>Trà thảo mộc cho cuộc sống khỏe mạnh</h1>
+                    <p>
+                        Trà thảo mộc từ nguyên liệu tự nhiên, giúp thanh lọc cơ thể và tăng cường sức khỏe mỗi
+                        ngày.
+                    </p>
+                    <div class="hero-buttons">
+                        <a asp-action="index" asp-controller="CustomerProducts" class="btn btn-primary">
+                            Mua ngay
+                            <i class="fas fa-arrow-right"></i>
+                        </a>
+                        <a href="#benefits" class="btn btn-outline">Tìm hiểu thêm</a>
+                    </div>
+                    <div class="hero-features">
+                        <div class="feature">
+                            <i class="fas fa-check"></i>
+                            <span>100% Tự nhiên</span>
+                        </div>
+                        <div class="feature">
+                            <i class="fas fa-check"></i>
+                            <span>Không chất bảo quản</span>
+                        </div>
+                        <div class="feature">
+                            <i class="fas fa-check"></i>
+                            <span>Giao hàng nhanh</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="hero-image">
+                    <img src="https://images.unsplash.com/photo-1622597467836-f3285f2131b8?w=600&h=600&fit=crop"
+                         alt="Detox Drinks">
+
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Products Section -->
+    <section id="products" class="products-section">
+        <div class="container">
+            <div class="section-header">
+                <h2>Sản phẩm nổi bật</h2>
+                <p>Khám phá bộ sưu tập nước detox tươi ngon và bổ dưỡng của chúng tôi</p>
+            </div>
+            <div class="products-grid" id="featuredProducts">
+
+                @foreach (var item in (List<Product>)ViewBag.Feartureproduct)
+                {
+                    @* <div class="col-lg-3 col-md-6 col-sm-6 pb-1">
+                        <div class="product-item bg-light mb-4">
+                            <a asp-action="Details" asp-controller="CustomerProducts" asp-route-Id=@item.Id class="product-img position-relative overflow-hidden">
+                                @if (item.Images.Count() != 0)
+                                {
+                                    <img class="img-fluid" src="@((item.Images.Where(a=>a.Isthumbnail == 1)).Count() == 1 ? item.Images.FirstOrDefault(a=>a.Isthumbnail == 1)?.ImageUrl:item.Images.FirstOrDefault()?.ImageUrl)" alt="" style="width: 100%; height: 400px; object-fit: cover;">
+                                }
+                                else
+                                {
+                                    <img class="img-fluid" src="~/sourceimg/NoImage.jpg" alt="" style="width: 100%; height: 100%; object-fit: cover;">
+                                }
+
+                            </a>
+                            <div class="text-center py-4">
+                                <a class="h6 text-decoration-none text-truncate" href="" style="font-size:15px;display: inline-block; width: 30ch; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">@item.ProductName</a>
+                                <div class="d-flex align-items-center justify-content-center mt-2">
+                                    <h5>@item.Price.ToString("c0", new System.Globalization.CultureInfo("vi-VN"))</h5><h6 class="text-muted ml-2"><del>@((item.Price + (item.Price * (decimal)0.05)).ToString("c0", new System.Globalization.CultureInfo("vi-VN")))</del></h6>
+                                </div>
+                            </div>
+                        </div>
+                    </div> *@
+                    <div class="product-card">
+                        <div class="product-image">
+                            <a asp-action="Details" asp-controller="CustomerProducts" asp-route-Id=@item.Id>
+                            <div class="product-badge new">Mới</div>
+                            @* <img src="https://images.unsplash.com/photo-1622597467836-f3285f2131b8?w=300&h=300&fit=crop" alt="Green Detox"> *@
+                                @if (item.Images.Count() != 0)
+                                {
+                                    <img class="img-fluid" src="@((item.Images.Where(a=>a.Isthumbnail == 1)).Count() == 1 ? item.Images.FirstOrDefault(a=>a.Isthumbnail == 1)?.ImageUrl:item.Images.FirstOrDefault()?.ImageUrl)" alt="" style="width: 100%; height: 400px; object-fit: cover;">
+                                }
+                                else
+                                {
+                                    <img class="img-fluid" src="~/sourceimg/NoImage.jpg" alt="" style="width: 100%; height: 100%; object-fit: cover;">
+                                }
+                            </a>
+                        </div>
+                        <div class="product-info">
+                            <div class="product-name">@item.ProductName</div>
+                            <div class="product-description">@item.Description</div>
+                            <div class="product-rating">
+                                <div>
+                                    <!--${stars}
+                                    <span class="rating-count">(${product.reviews})</span>
+                                        ${product.price.toLocaleString()}
+                                    -->
+                                </div>
+                                <div class="product-price">
+                                    <h5>@item.Price.ToString("c0", new System.Globalization.CultureInfo("vi-VN"))</h5>
+                                    <h6>
+                                        <del>@((item.Price + (item.Price * (decimal)0.05)).ToString("c0", new System.Globalization.CultureInfo("vi-VN")))</del>
+                                    </h6>
+
+
+                                </div>
+                            </div>
+                            <div class="product-actions">
+                                <button class="add-to-cart-btn" onclick="addToCart('${product.id}')">
+                                    <i class="fas fa-shopping-cart"></i>
+                                    Thêm vào giỏ
+                                </button>
+                                <a asp-action="Details" asp-controller="CustomerProducts" asp-route-Id=@item.Id>
+                                <button class="view-product-btn">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                }
+                
+
+            </div>
+            <div class="section-footer">
+                <a asp-action="index" asp-controller="CustomerProducts" class="btn btn-outline">
+                    Xem tất cả sản phẩm
+                    <i class="fas fa-arrow-right"></i>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Benefits Section -->
+    <section id="benefits" class="benefits-section">
+        <div class="container">
+            <div class="section-header">
+                <h2>Lợi ích của trà thảo mộc</h2>
+                <p>Khám phá những lợi ích tuyệt vời mà trà thảo mộc mang lại cho sức khỏe của bạn</p>
+            </div>
+            <div class="benefits-grid">
+                <div class="benefit-card">
+                    <div class="benefit-icon">
+                        <i class="fas fa-bolt"></i>
+                    </div>
+                    <h3>Tăng cường năng lượng</h3>
+                    <p>
+                        Trà thảo mộc giúp cung cấp vitamin và khoáng chất thiết yếu, tăng cường năng lượng và sự tỉnh
+                        táo.
+                    </p>
+                </div>
+                <div class="benefit-card">
+                    <div class="benefit-icon">
+                        <i class="fas fa-leaf"></i>
+                    </div>
+                    <h3>Thanh lọc cơ thể</h3>
+                    <p>Giúp loại bỏ độc tố, thanh lọc gan và thận, hỗ trợ quá trình trao đổi chất hiệu quả.</p>
+                </div>
+                <div class="benefit-card">
+                    <div class="benefit-icon">
+                        <i class="fas fa-weight"></i>
+                    </div>
+                    <h3>Hỗ trợ giảm cân</h3>
+                    <p>
+                        Thúc đẩy quá trình trao đổi chất, giảm cảm giác thèm ăn và hỗ trợ quá trình đốt cháy mỡ tự
+                        nhiên.
+                    </p>
+                </div>
+                <div class="benefit-card">
+                    <div class="benefit-icon">
+                        <i class="fas fa-heart"></i>
+                    </div>
+                    <h3>Cải thiện tiêu hóa</h3>
+                    <p>Các thành phần tự nhiên trong trà thảo giúp cải thiện hệ tiêu hóa và ngăn ngừa táo bón.</p>
+                </div>
+                <div class="benefit-card">
+                    <div class="benefit-icon">
+                        <i class="fas fa-smile"></i>
+                    </div>
+                    <h3>Làm đẹp da</h3>
+                    <p>Cung cấp độ ẩm và chất chống oxy hóa giúp làn da sáng mịn, ngăn ngừa lão hóa sớm.</p>
+                </div>
+                <div class="benefit-card">
+                    <div class="benefit-icon">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                    <h3>Tăng cường miễn dịch</h3>
+                    <p>
+                        Vitamin và khoáng chất trong trà thảo mộc giúp tăng cường hệ miễn dịch.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials Section -->
+    @* <section id="testimonials" class="testimonials-section">
+        <div class="container">
+            <div class="section-header">
+                <h2>Khách hàng nói gì về chúng tôi</h2>
+                <p>Những trải nghiệm thực tế từ khách hàng đã sử dụng sản phẩm của chúng tôi</p>
+            </div>
+            <div class="testimonials-grid">
+                <div class="testimonial-card">
+                    <div class="testimonial-header">
+                        <img src="https://images.unsplash.com/photo-1494790108755-2616b612b786?w=50&h=50&fit=crop&crop=face"
+                             alt="Nguyễn Thị Hương">
+                        <div>
+                            <h4>Nguyễn Thị Hương</h4>
+                            <div class="stars">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <p>
+                        "Tôi đã sử dụng nước detox của DetoxFresh được 2 tháng và thấy sức khỏe cải thiện rõ rệt. Da
+                        dẻ sáng hơn, tiêu hóa tốt hơn và cảm thấy tràn đầy năng lượng mỗi ngày."
+                    </p>
+                </div>
+                <div class="testimonial-card">
+                    <div class="testimonial-header">
+                        <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=50&h=50&fit=crop&crop=face"
+                             alt="Trần Văn Minh">
+                        <div>
+                            <h4>Trần Văn Minh</h4>
+                            <div class="stars">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="far fa-star"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <p>
+                        "Tôi thường xuyên tập luyện và nước detox của DetoxFresh là thức uống không thể thiếu sau mỗi
+                        buổi tập. Giúp tôi phục hồi nhanh chóng và duy trì năng lượng cả ngày."
+                    </p>
+                </div>
+                <div class="testimonial-card">
+                    <div class="testimonial-header">
+                        <img src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=50&h=50&fit=crop&crop=face"
+                             alt="Lê Thị Mai">
+                        <div>
+                            <h4>Lê Thị Mai</h4>
+                            <div class="stars">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <p>
+                        "Hương vị tuyệt vời và thành phần hoàn toàn tự nhiên. Tôi đã giảm 3kg sau 1 tháng kết hợp
+                        uống detox và tập luyện. Sẽ tiếp tục sử dụng và giới thiệu cho bạn bè."
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section> *@
+
+    <!-- Offer Start -->
+    @* <div class="container-fluid pt-5 pb-3">
+        <div class="row px-xl-5">
+            <div class="col-md-6">
+                <div class="product-offer mb-30" style="height: 300px;">
+                    <img class="img-fluid" src="https://images8.alphacoders.com/132/1329760.jpeg" alt="">
+                    <div class="offer-text">
+                        <h6 class="text-white text-uppercase">Save 20%</h6>
+                        <h3 class="text-white mb-3">Special Offer</h3>
+                        <a asp-action="Index" asp-controller="CustomerProducts" class="btn btn-primary">Shop Now</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="product-offer mb-30" style="height: 300px;">
+                    <img class="img-fluid" src="https://c4.wallpaperflare.com/wallpaper/747/717/230/gamer-blurred-mouse-pad-keyboards-photography-hd-wallpaper-preview.jpg" alt="">
+                    <div class="offer-text">
+                        <h6 class="text-white text-uppercase">Save 20%</h6>
+                        <h3 class="text-white mb-3">Special Offer</h3>
+                        <a asp-action="Index" asp-controller="CustomerProducts" class="btn btn-primary">Shop Now</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div> *@
+    <!-- Offer End -->
+
+    <!-- CTA Section -->
+    <section class="cta-section">
+        <div class="container">
+            <div class="cta-content">
+                <div class="cta-text">
+                    <h2>Bắt đầu hành trình sức khoẻ của bạn ngay hôm nay</h2>
+                    <p>Đăng ký nhận thông tin về sản phẩm mới và ưu đãi đặc biệt từ Mộc Trà Lam</p>
+                    <div class="newsletter-form">
+                        <input type="email" placeholder="Email của bạn" id="newsletterEmail">
+                        <button class="btn btn-white" @* onclick="subscribeNewsletter()" *@>
+                            Đăng ký
+                            <i class="fas fa-arrow-right"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="cta-image">
+                    <img src="https://suckhoedoisong.qltns.mediacdn.vn/324455921873985536/2023/11/27/gettyimages-1202467859-17010742871441624764569.jpg"
+                         alt="Tra Lifestyle">
+                </div>
+            </div>
+        </div>
+    </section>
+</main>
+
+@* <!-- Carousel End -->
+<!-- Featured Start -->
+<div class="container-fluid pt-5">
+	<div class="row px-xl-5 pb-3">
+		<div class="col-lg-3 col-md-6 col-sm-12 pb-1">
+			<div class="d-flex align-items-center bg-light mb-4" style="padding: 30px;">
+				<h1 class="fa fa-check text-primary m-0 mr-3"></h1>
+				<h5 class="font-weight-semi-bold m-0">Quality Product</h5>
+			</div>
+		</div>
+		<div class="col-lg-3 col-md-6 col-sm-12 pb-1">
+			<div class="d-flex align-items-center bg-light mb-4" style="padding: 30px;">
+				<h1 class="fa fa-shipping-fast text-primary m-0 mr-2"></h1>
+				<h5 class="font-weight-semi-bold m-0">Free Shipping</h5>
+			</div>
+		</div>
+		<div class="col-lg-3 col-md-6 col-sm-12 pb-1">
+			<div class="d-flex align-items-center bg-light mb-4" style="padding: 30px;">
+				<h1 class="fas fa-exchange-alt text-primary m-0 mr-3"></h1>
+				<h5 class="font-weight-semi-bold m-0">14-Day Return</h5>
+			</div>
+		</div>
+		<div class="col-lg-3 col-md-6 col-sm-12 pb-1">
+			<div class="d-flex align-items-center bg-light mb-4" style="padding: 30px;">
+				<h1 class="fa fa-phone-volume text-primary m-0 mr-3"></h1>
+				<h5 class="font-weight-semi-bold m-0">24/7 Support</h5>
+			</div>
+		</div>
+	</div>
+</div>
+<!-- Featured End -->
+<!-- Categories Start -->
+@* <div class="container-fluid pt-5">
+	<h2 class="section-title position-relative text-uppercase mx-xl-5 mb-4"><span class="bg-secondary pr-3">Danh mục sản phẩm</span></h2>
+	<div class="row px-xl-5 pb-3">
+		@foreach (var item in ViewBag.productTypeList)
+		{
+			<div class="col-lg-3 col-md-4 col-sm-6 pb-1">
+				<a class="text-decoration-none" asp-action="index" asp-controller="customerproducts" asp-route-typeId="@item.Id">
+					<div class="cat-item d-flex align-items-center mb-4">
+						<div class="overflow-hidden" style="width: 100px; height: 100px;">
+							<img class="img-fluid" src="@item.ImageUrl" alt="">
+						</div>
+						<div class="flex-fill pl-3">
+							<h6>@item.TypeName</h6>
+							<small class="text-body">@item.Products.Count sản phẩm</small>
+						</div>
+					</div>
+				</a>
+			</div>
+		}
+	</div>
+</div> *@
+<!-- Categories End -->
+<!-- Products Start -->
+@* <div class="container-fluid pt-5 pb-3">
+	<h2 class="section-title position-relative text-uppercase mx-xl-5 mb-4"><span class="bg-secondary pr-3">Top sản phẩm bán chạy nhất</span></h2>
+	<div class="row px-xl-5">
+		@foreach (var item in (List<Product>)ViewBag.Feartureproduct)
+		{
+			<div class="col-lg-3 col-md-6 col-sm-6 pb-1">
+				<div class="product-item bg-light mb-4">
+					<a asp-action="Details" asp-controller="CustomerProducts" asp-route-Id=@item.Id class="product-img position-relative overflow-hidden">
+						@if (item.Images.Count() != 0)
+						{
+							<img class="img-fluid" src="@((item.Images.Where(a=>a.Isthumbnail == 1)).Count() == 1 ? item.Images.FirstOrDefault(a=>a.Isthumbnail == 1)?.ImageUrl:item.Images.FirstOrDefault()?.ImageUrl)" alt="" style="width: 100%; height: 400px; object-fit: cover;">
+						}
+						else
+						{
+							<img class="img-fluid" src="~/sourceimg/NoImage.jpg" alt="" style="width: 100%; height: 100%; object-fit: cover;">
+						}
+
+					</a>
+					<div class="text-center py-4">
+						<a class="h6 text-decoration-none text-truncate" href="" style="font-size:15px;display: inline-block; width: 30ch; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">@item.ProductName</a>
+						<div class="d-flex align-items-center justify-content-center mt-2">
+							<h5>@item.Price.ToString("c0", new System.Globalization.CultureInfo("vi-VN"))</h5><h6 class="text-muted ml-2"><del>@((item.Price + (item.Price * (decimal)0.05)).ToString("c0", new System.Globalization.CultureInfo("vi-VN")))</del></h6>
+						</div>
+					</div>
+				</div>
+			</div>
+
+		}
+
+
+	</div>
+</div>  *@
+@* <div class="container-fluid pt-5 pb-3">
+	<h2 class="section-title position-relative text-uppercase mx-xl-5 mb-4"><span class="bg-secondary pr-3">Sản phẩm mới</span></h2>
+	<div class="row px-xl-5">
+		@foreach (var item in (List<Product>)ViewBag.Recentproduct)
+		{
+			<div class="col-lg-3 col-md-6 col-sm-6 pb-1">
+				<div class="product-item bg-light mb-4">
+					<a asp-action="Details" asp-controller="CustomerProducts" asp-route-Id=@item.Id class="product-img position-relative overflow-hidden">
+						@if (item.Images.Count() != 0)
+						{
+							<img class="img-fluid" src="@((item.Images.Where(a=>a.Isthumbnail == 1)).Count() == 1 ? item.Images.FirstOrDefault(a=>a.Isthumbnail == 1)?.ImageUrl:item.Images.FirstOrDefault()?.ImageUrl)" alt="" style="width: 100%; height: 400px; object-fit: cover;">
+						}
+						else
+						{
+							<img class="img-fluid" src="~/sourceimg/NoImage.jpg" alt="" style="width: 100%; height: 100%; object-fit: cover;">
+						}
+
+					</a>
+					<div class="text-center py-4">
+						<a class="h6 text-decoration-none text-truncate" href="" style="font-size:15px;display: inline-block; width: 30ch; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">@item.ProductName</a>
+						<div class="d-flex align-items-center justify-content-center mt-2">
+							<h5>@item.Price.ToString("c0", new System.Globalization.CultureInfo("vi-VN"))</h5><h6 class="text-muted ml-2"><del>@((item.Price + (item.Price * (decimal)0.05)).ToString("c0", new System.Globalization.CultureInfo("vi-VN")))</del></h6>
+						</div>
+					</div>
+				</div>
+			</div>
+
+		}
+	</div>
+</div> *@
+<!-- Products End -->
+<!-- Vendor Start -->
+@* <div class="container-fluid py-5">
+	<div class="row px-xl-5">
+		<div class="col">
+			<div class="owl-carousel vendor-carousel">
+				<div class="bg-light p-4">
+					<img src="img/vendor-1.jpg" alt="">
+				</div>
+				<div class="bg-light p-4">
+					<img src="img/vendor-2.jpg" alt="">
+				</div>
+				<div class="bg-light p-4">
+					<img src="img/vendor-3.jpg" alt="">
+				</div>
+				<div class="bg-light p-4">
+					<img src="img/vendor-4.jpg" alt="">
+				</div>
+				<div class="bg-light p-4">
+					<img src="img/vendor-5.jpg" alt="">
+				</div>
+				<div class="bg-light p-4">
+					<img src="img/vendor-6.jpg" alt="">
+				</div>
+				<div class="bg-light p-4">
+					<img src="img/vendor-7.jpg" alt="">
+				</div>
+				<div class="bg-light p-4">
+					<img src="img/vendor-8.jpg" alt="">
+				</div>
+			</div>
+		</div>
+	</div>
+</div> *@
+<!-- Vendor End -->

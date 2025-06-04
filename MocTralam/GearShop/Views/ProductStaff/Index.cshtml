@@ -1,0 +1,159 @@
+﻿@model X.PagedList.IPagedList<GearShop.Models.Product>
+@using X.PagedList.Mvc.Core
+@using X.PagedList
+@using Microsoft.AspNetCore.Mvc.Rendering
+
+@{
+    ViewData["Title"] = "Quản lý sản phẩm";
+    Layout = "_LayoutStaff";
+}
+
+<div class="container-fluid pt-4 px-4">
+    <div class="row g-4">
+        <div class="col-12">
+            <div class="bg-light rounded h-100 p-4">
+                <div class="d-flex align-items-center justify-content-between mb-4">
+                    <h4 class="mb-0">Danh sách sản phẩm</h4>
+                    <div class="d-flex align-items-center">
+                        <div class="me-2">
+                            <select id="brandFilter" class="form-select" style="width: 200px;">
+                                <option value="">Tất cả thương hiệu</option>
+                                @foreach (var brand in (SelectList)ViewData["Brands"])
+                                {
+                                    if (ViewData["SelectedBrand"]?.ToString() == brand.Value)
+                                    {
+                                        <option value="@brand.Value" selected>@brand.Text</option>
+                                    }
+                                    else
+                                    {
+                                        <option value="@brand.Value">@brand.Text</option>
+                                    }
+                                }
+                            </select>
+                        </div>
+                        <div class="me-2">
+                            <select id="typeFilter" class="form-select" style="width: 200px;">
+                                <option value="">Tất cả loại sản phẩm</option>
+                                @foreach (var type in (SelectList)ViewData["ProductTypes"])
+                                {
+                                    if (ViewData["SelectedType"]?.ToString() == type.Value)
+                                    {
+                                        <option value="@type.Value" selected>@type.Text</option>
+                                    }
+                                    else
+                                    {
+                                        <option value="@type.Value">@type.Text</option>
+                                    }
+                                }
+                            </select>
+                        </div>
+                        <a asp-action="Create" class="btn btn-primary">
+                            <i class="fa fa-plus me-2"></i>Tạo mới
+                        </a>
+                    </div>
+                </div>
+
+                @if (TempData["SuccessMessage"] != null)
+                {
+                    <div class="alert alert-success alert-dismissible fade show" role="alert">
+                        @TempData["SuccessMessage"]
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                }
+
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Num</th>
+                                <th>
+                                    <a href="@Url.Action("Index", new { page = ViewData["CurrentPage"], brandId = ViewData["SelectedBrand"], typeId = ViewData["SelectedType"], sortOrder = ViewData["CurrentSort"]?.ToString() == "name" ? "name_desc" : "name" })">Tên sản phẩm</a>
+                                </th>
+                                <th>
+                                    <a href="@Url.Action("Index", new { page = ViewData["CurrentPage"], brandId = ViewData["SelectedBrand"], typeId = ViewData["SelectedType"], sortOrder = ViewData["CurrentSort"]?.ToString() == "quantity" ? "quantity_desc" : "quantity" })">Số lượng</a>
+                                </th>
+                                <th>
+                                    <a href="@Url.Action("Index", new { page = ViewData["CurrentPage"], brandId = ViewData["SelectedBrand"], typeId = ViewData["SelectedType"], sortOrder = ViewData["CurrentSort"]?.ToString() == "price" ? "price_desc" : "price" })">Giá</a>
+                                </th>
+                                <th>
+                                    <a href="@Url.Action("Index", new { page = ViewData["CurrentPage"], brandId = ViewData["SelectedBrand"], typeId = ViewData["SelectedType"], sortOrder = ViewData["CurrentSort"]?.ToString() == "brand" ? "brand_desc" : "brand" })">Thương hiệu</a>
+                                </th>
+                                <th>
+                                    <a href="@Url.Action("Index", new { page = ViewData["CurrentPage"], brandId = ViewData["SelectedBrand"], typeId = ViewData["SelectedType"], sortOrder = ViewData["CurrentSort"]?.ToString() == "type" ? "type_desc" : "type" })">Loại sản phẩm</a>
+                                </th>
+                                <th>
+                                    <a href="@Url.Action("Index", new { page = ViewData["CurrentPage"], brandId = ViewData["SelectedBrand"], typeId = ViewData["SelectedType"], sortOrder = ViewData["CurrentSort"]?.ToString() == "status" ? "status_desc" : "status" })">Trạng thái</a>
+                                </th>
+                                <th>Thao tác</th>
+                            </tr>
+                        </thead>
+                        @{
+                            var index = (Model.PageNumber - 1) * Model.PageSize + 1;
+                        }
+                        <tbody>
+                            @foreach (var item in Model)
+                            {
+                                <tr>
+                                    <td>@index</td>
+                                    <td>@Html.DisplayFor(modelItem => item.ProductName)</td>
+                                    <td>@Html.DisplayFor(modelItem => item.Quantity)</td>
+                                    <td>@item.Price.ToString("C")</td>
+                                    <td>@Html.DisplayFor(modelItem => item.Brand.BrandName)</td>
+                                    <td>@Html.DisplayFor(modelItem => item.ProductType.TypeName)</td>
+                                    <td>
+                                        @if (item.Status == 1)
+                                        {
+                                            <span class="badge bg-success">Đang bán</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-danger">Không bán</span>
+                                        }
+                                    </td>
+                                    <td>
+                                        <div class="btn-group" role="group">
+                                            <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-warning">
+                                                <i class="fa fa-edit"></i>
+                                            </a>
+                                            <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-info">
+                                                <i class="fa fa-eye"></i>
+                                            </a>
+                                            <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-danger">
+                                                <i class="fa fa-trash"></i>
+                                            </a>
+                                        </div>
+                                    </td>
+                                </tr>
+                                index++;
+                            }
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="d-flex justify-content-center mt-3">
+                    @Html.PagedListPager(
+                             (IPagedList)Model,
+                             page => Url.Action("Index", new { page, brandId = ViewData["SelectedBrand"], typeId = ViewData["SelectedType"], sortOrder = ViewData["CurrentSort"] }),
+                             new PagedListRenderOptions
+                    {
+                        LiElementClasses = new[] { "page-item" },
+                        PageClasses = new[] { "page-link" },
+                        UlElementClasses = new[] { "pagination" },
+                        ActiveLiElementClass = "active"
+                    }
+                             )
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.getElementById('brandFilter').addEventListener('change', function () {
+        window.location.href = '@Url.Action("Index")' + '?brandId=' + this.value + '&typeId=' + document.getElementById('typeFilter').value + '&sortOrder=@ViewData["CurrentSort"]';
+    });
+
+    document.getElementById('typeFilter').addEventListener('change', function () {
+        window.location.href = '@Url.Action("Index")' + '?brandId=' + document.getElementById('brandFilter').value + '&typeId=' + this.value + '&sortOrder=@ViewData["CurrentSort"]';
+    });
+</script>
