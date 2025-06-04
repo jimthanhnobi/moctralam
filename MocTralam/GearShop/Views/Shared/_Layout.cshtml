@@ -21,7 +21,6 @@
 <body>
 
 	<!-- Notitfication -->
-	<partial name="_NotificationPartial" />
 	<!-- Topbar Start -->
 @* 	@if (!roles.Contains("Staff") && !roles.Contains("Staff"))
 	{
@@ -124,26 +123,12 @@
 					</a>
 					<nav class="nav-menu">
 						<a href="/#products">Sản phẩm</a>
-						<a asp-action="index" asp-controller="CustomerProducts">Cửa hàng</a>
 						<a href="/#benefits">Lợi ích</a>
 						@* <a href="/#testimonials">Đánh giá</a> *@
 						<a href="/#contact">Liên hệ</a>
 					</nav>
 				</div>
-				<div class="nav-right">
-					<button class="mobile-menu-btn" onclick="toggleMobileMenu()">
-						<i class="fas fa-bars"></i>
-					</button>
-					<button id="userCart" class="cart-btn">
-						<partial name="_userCartPartial" />
-					</button>
-					<a id="login" asp-area="Identity" asp-page="/Account/Login">
-						<button class="login-btn">
-							Đăng nhập
-					</button>
-						</a>
-					
-				</div>
+		
 			</div>
 		</div>
 	</header>

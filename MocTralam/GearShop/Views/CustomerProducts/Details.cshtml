@@ -77,7 +77,7 @@
 				<p class="product-short-description">
 					@{
         if (!string.IsNullOrEmpty(Model.Description)) {
-            @Model.Description
+							@Html.Raw(Model.Description)
         } else {
             @:Không có mô tả
         }
@@ -279,7 +279,7 @@
 			</div>
 		</div>
 	</div>
-<main>
+<main/>
 
 <!-- Shop Detail Start -->
 		@*
